@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>纵览 - Spark 1.5.1 Documentation</title>
+        
+          <meta name="description" content="Apache Spark 1.5.1 documentation homepage">
+        
+
+        
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+            body {
+                padding-top: 60px;
+                padding-bottom: 40px;
+            }
+        </style>
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+
+        <link rel="stylesheet" href="css/pygments-default.css">
+
+        
+
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+        <![endif]-->
+
+        <!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
+
+        <div class="navbar navbar-fixed-top" id="topbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    <div class="brand"><a href="index.html">
+                      <img src="img/spark-logo-hd.png" style="height:50px;"/></a><span class="version">1.5.1</span>
+                    </div>
+                    <ul class="nav">
+                        <!--TODO(andyk): Add class="active" attribute to li some how.-->
+                        <li><a href="index.html">Overview</a></li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Programming Guides<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="quick-start.html">Quick Start</a></li>
+                                <li><a href="programming-guide.html">Spark Programming Guide</a></li>
+                                <li class="divider"></li>
+                                <li><a href="streaming-programming-guide.html">Spark Streaming</a></li>
+                                <li><a href="sql-programming-guide.html">DataFrames and SQL</a></li>
+                                <li><a href="mllib-guide.html">MLlib (Machine Learning)</a></li>
+                                <li><a href="graphx-programming-guide.html">GraphX (Graph Processing)</a></li>
+                                <li><a href="bagel-programming-guide.html">Bagel (Pregel on Spark)</a></li>
+                                <li><a href="sparkr.html">SparkR (R on Spark)</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">API Docs<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="api/scala/index.html#org.apache.spark.package">Scala</a></li>
+                                <li><a href="api/java/index.html">Java</a></li>
+                                <li><a href="api/python/index.html">Python</a></li>
+                                <li><a href="api/R/index.html">R</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Deploying<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="cluster-overview.html">Overview</a></li>
+                                <li><a href="submitting-applications.html">Submitting Applications</a></li>
+                                <li class="divider"></li>
+                                <li><a href="spark-standalone.html">Spark Standalone</a></li>
+                                <li><a href="running-on-mesos.html">Mesos</a></li>
+                                <li><a href="running-on-yarn.html">YARN</a></li>
+                                <li class="divider"></li>
+                                <li><a href="ec2-scripts.html">Amazon EC2</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a href="api.html" class="dropdown-toggle" data-toggle="dropdown">More<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="configuration.html">Configuration</a></li>
+                                <li><a href="monitoring.html">Monitoring</a></li>
+                                <li><a href="tuning.html">Tuning Guide</a></li>
+                                <li><a href="job-scheduling.html">Job Scheduling</a></li>
+                                <li><a href="security.html">Security</a></li>
+                                <li><a href="hardware-provisioning.html">Hardware Provisioning</a></li>
+                                <li><a href="hadoop-third-party-distributions.html">3<sup>rd</sup>-Party Hadoop Distros</a></li>
+                                <li class="divider"></li>
+                                <li><a href="building-spark.html">Building Spark</a></li>
+                                <li><a href="https://cwiki.apache.org/confluence/display/SPARK/Contributing+to+Spark">Contributing to Spark</a></li>
+                                <li><a href="https://cwiki.apache.org/confluence/display/SPARK/Supplemental+Spark+Projects">Supplemental Projects</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!--<p class="navbar-text pull-right"><span class="version-text">v1.5.1</span></p>-->
+                </div>
+            </div>
+        </div>
+
+        <div class="container" id="content">
+          
+            <h1 class="title">Spark纵览</h1>
+          
+
+          <p>Apache Spark是一个快速通用的集群计算系统。它为Java，Scala，Python以及R提供了一组
+高度抽象的API，并且还提供了用于支持通用执行图算法的一个优化过的引擎。它还支持一大组
+高层次的工具，包括用于SQL和结构化数据处理的<a href="sql-programming-guide.html">Spark SQL</a>，
+用于机器学习的<a href="mllib-guide.html">MLlib</a>，用于图处理的<a href="graphx-programming-guide.html">GraphX</a>,
+以及<a href="streaming-programming-guide.html">Spark Streaming</a>。</p>
+
+<h1 id="section">下载</h1>
+
+<p>您可以通过项目中的<a href="http://spark.apache.org/downloads.html">下载页</a>来获得Spark程序包。
+这篇文档用于Spark版本1.5.1。Spark使用了Hadoop客户端库来处理HDFS和YARN。
+下载中包含了与一些流行Hadoop版本的整合好的Spark包。用户同样也可以自行选择下载任意版本&#8221;免费Hadoop&#8221;二进制包，
+然后在其上运行Spark。<a href="hadoop-provided.html">如何扩展Spark的类路径</a>.</p>
+
+<p>如果您打算自行从源代码来构建Spark，请看<a href="building-spark.html">构建Spark</a>.</p>
+
+<p>Spark可以运行在Window以及其他类Unix系统上(比如Linux和Mac OS)。想在本地单机上运行非常容易，您所需要的
+仅仅是安装Java并配置其到您的系统<code>PATH</code>中，或者配置<code>JAVA_HOME</code>系统变量来指向您的Java安装路径。</p>
+
+<p>Spark需要运行在Java 7+，Pythong 2.6+以及R3.1+之上。对于Scala API，Spark 1.5.1 使用
+Scala 2.10。您需要使用一个兼容的Scala版本(2.10.x)。</p>
+
+<h1 id="spark-shell">运行例子程序以及Spark shell</h1>
+
+<p>Spark本身包含一些例子程序。Scala，Java，Python以及R例子都位于<code>examples/src/main</code>目录下。
+您可以在Spark安装个目录中使用<code>bin/run-example &lt;class&gt; [params]</code>来运行任意的Java或Scala例子
+程序。(当然在幕后，为了运行程序，这会调用更为通用的<a href="submitting-applications.html"><code>spark-submit</code>脚本</a>。
+例如，</p>
+
+<pre><code>./bin/run-example SparkPi 10
+</code></pre>
+
+<p>您同样可以通过一个修改版本的Scala shell来交互式的运行Spark。这是一种更好的学习该框架的方式。
+You can also run Spark interactively through a modified version of the Scala shell. This is a</p>
+
+<pre><code>./bin/spark-shell --master local[2]
+</code></pre>
+
+<p><code>--master</code>选项用于声明<a href="submitting-applications.html#master-urls">一个分布式集群的主URL</a>，
+或者使用<code>local</code>来在本地的一个线程中运行，或使用<code>local[N]</code>来在多个本地线程中运行。您可以先使用
+<code>local</code>来尝试一下。要查看其他选项，请使用<code>--help</code>选项来运行Spark shell。</p>
+
+<p>Spark同样提供了一组Python API。要使用Python解释器来交互式的运行Spark，请使用
+<code>bin/pyspark</code>:</p>
+
+<pre><code>./bin/pyspark --master local[2]
+</code></pre>
+
+<p>Python例子程序也有提供。例如，</p>
+
+<pre><code>./bin/spark-submit examples/src/main/python/pi.py 10
+</code></pre>
+
+<p>从1.4开始，Spark同样也提供了一组实验性的<a href="sparkr.html">R API</a>(只包含了DataFrames API)。
+要使用R解释器来交互式的运行Spark，请使用<code>bin/sparkR</code>:</p>
+
+<pre><code>./bin/sparkR --master local[2]
+</code></pre>
+
+<p>R例子程序也有提供。例如，</p>
+
+<pre><code>./bin/spark-submit examples/src/main/r/dataframe.R
+</code></pre>
+
+<h1 id="section-1">在集群上运行</h1>
+
+<p>Spark<a href="cluster-overview.html">集群模式概览</a>解释了需要在集群上运行Spark的关键的概念。Spark可以自行在其上运行，也可以
+通过一些现存的集群管理器来运行。目前提供了以下一些选项来进行部署：</p>
+
+<ul>
+  <li><a href="ec2-scripts.html">Amazon EC2</a>: 我们的EC2脚本可以允许您在五分钟之内启动一个EC2集群</li>
+  <li><a href="spark-standalone.html">Standalone Deploy Mode</a>: 最简单的方式来在一个私有集群中部署Spark</li>
+  <li><a href="running-on-mesos.html">Apache Mesos</a></li>
+  <li><a href="running-on-yarn.html">Hadoop YARN</a></li>
+</ul>
+
+<h1 id="section-2">接下来&#8230;&#8230;</h1>
+
+<p><strong>编程指南:</strong></p>
+
+<ul>
+  <li><a href="quick-start.html">快速上手</a>: 一个对Spark API的快速介绍；先从这里开始！</li>
+  <li><a href="programming-guide.html">Spark编程指南</a>: 对Spark所支持的语言(Scala，Java，Python及R)的详细介绍</li>
+  <li>Spark所包含的模块:
+    <ul>
+      <li><a href="streaming-programming-guide.html">Spark Streaming</a>: 用于处理实时数据流</li>
+      <li><a href="sql-programming-guide.html">Spark SQL and DataFrames</a>: 用于支持结构化数据和关系型查找</li>
+      <li><a href="mllib-guide.html">MLlib</a>: 内嵌的机器学习库</li>
+      <li><a href="graphx-programming-guide.html">GraphX</a>: 最新的用于图处理的Spark API</li>
+      <li><a href="bagel-programming-guide.html">Bagel (Pregel on Spark)</a>: 旧版本的较为简单的图处理模型API</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>API Docs:</strong></p>
+
+<ul>
+  <li><a href="api/scala/index.html#org.apache.spark.package">Spark Scala API (Scaladoc)</a></li>
+  <li><a href="api/java/index.html">Spark Java API (Javadoc)</a></li>
+  <li><a href="api/python/index.html">Spark Python API (Sphinx)</a></li>
+  <li><a href="api/R/index.html">Spark R API (Roxygen2)</a></li>
+</ul>
+
+<p><strong>Deployment Guides:</strong></p>
+
+<ul>
+  <li><a href="cluster-overview.html">Cluster Overview</a>: 关于在集群上运行Spark所需的概念和组件的一个概览</li>
+  <li><a href="submitting-applications.html">Submitting Applications</a>: 打包和部署应用</li>
+  <li>部署模式:
+    <ul>
+      <li><a href="ec2-scripts.html">Amazon EC2</a>: 五分钟内让您在EC2上启动一个集群的脚本</li>
+      <li><a href="spark-standalone.html">Standalone Deploy Mode</a>: 在不需要第三方集群管理器的情况下快速启动独立集群</li>
+      <li><a href="running-on-mesos.html">Mesos</a>: 使用<a href="http://mesos.apache.org">Apache Mesos</a>启动私有集群</li>
+      <li><a href="running-on-yarn.html">YARN</a>: 在Hadoop NextGen(YARN)上部署Spark</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>其他文档:</strong></p>
+
+<ul>
+  <li><a href="configuration.html">Configuration</a>: 使用Spark配置系统来定制化Spark</li>
+  <li><a href="monitoring.html">Monitoring</a>: 监控您的应用的行为</li>
+  <li><a href="tuning.html">Tuning Guide</a>: 优化性能和内存使用的一些好的建议</li>
+  <li><a href="job-scheduling.html">Job Scheduling</a>: 在Spark应用内和应用之间调度资源</li>
+  <li><a href="security.html">Security</a>: Spark安全支持</li>
+  <li><a href="hardware-provisioning.html">Hardware Provisioning</a>: 集群硬件的一些建议</li>
+  <li><a href="hadoop-third-party-distributions.html">3<sup>rd</sup> Party Hadoop Distributions</a>: 如何使用通用的Hadoop发行版</li>
+  <li>与其他存储系统的集成：
+    <ul>
+      <li><a href="storage-openstack-swift.html">OpenStack Swift</a></li>
+    </ul>
+  </li>
+  <li><a href="building-spark.html">Building Spark</a>: 使用Maven构建Spark</li>
+  <li><a href="https://cwiki.apache.org/confluence/display/SPARK/Contributing+to+Spark">Contributing to Spark</a></li>
+  <li><a href="https://cwiki.apache.org/confluence/display/SPARK/Supplemental+Spark+Projects">Supplemental Projects</a>: 一些相关的第三方Spark项目</li>
+</ul>
+
+<p><strong>外部资源:</strong></p>
+
+<ul>
+  <li><a href="http://spark.apache.org">Spark Homepage</a></li>
+  <li><a href="https://cwiki.apache.org/confluence/display/SPARK">Spark Wiki</a></li>
+  <li><a href="http://spark.apache.org/community.html">Spark Community</a> Spark资源，包括一些本地的Spark社区meetup</li>
+  <li><a href="http://stackoverflow.com/questions/tagged/apache-spark">StackOverflow tag <code>apache-spark</code></a></li>
+  <li><a href="http://spark.apache.org/mailing-lists.html">Mailing Lists</a>: 可以在这里询问Spark相关问题</li>
+  <li><a href="http://ampcamp.berkeley.edu/">AMP Camps</a>: 在UC Berkeley大学的一些训练营，有相关的一些关于
+Spark，Spark Streaming，Mesos等等的讨论和练习。<a href="http://ampcamp.berkeley.edu/3/">Videos</a>,
+<a href="http://ampcamp.berkeley.edu/3/">slides</a> 和 <a href="http://ampcamp.berkeley.edu/3/exercises/">exercises</a>
+可以免费获得</li>
+  <li><a href="http://spark.apache.org/examples.html">Code Examples</a>: 更多的例子程序可以在<code>examples</code>的子目录中获得。
+ (<a href="https://github.com/apache/spark/tree/master/examples/src/main/scala/org/apache/spark/examples">Scala</a>,
+ <a href="https://github.com/apache/spark/tree/master/examples/src/main/java/org/apache/spark/examples">Java</a>,
+ <a href="https://github.com/apache/spark/tree/master/examples/src/main/python">Python</a>,
+ <a href="https://github.com/apache/spark/tree/master/examples/src/main/r">R</a>)</li>
+</ul>
+
+
+        </div> <!-- /container -->
+
+        <script src="js/vendor/jquery-1.8.0.min.js"></script>
+        <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/vendor/anchor.min.js"></script>
+        <script src="js/main.js"></script>
+
+        <!-- MathJax Section -->
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                TeX: { equationNumbers: { autoNumber: "AMS" } }
+            });
+        </script>
+        <script>
+            // Note that we load MathJax this way to work with local file (file://), HTTP and HTTPS.
+            // We could use "//cdn.mathjax...", but that won't support "file://".
+            (function(d, script) {
+                script = d.createElement('script');
+                script.type = 'text/javascript';
+                script.async = true;
+                script.onload = function(){
+                    MathJax.Hub.Config({
+                        tex2jax: {
+                            inlineMath: [ ["$", "$"], ["\\\\(","\\\\)"] ],
+                            displayMath: [ ["$$","$$"], ["\\[", "\\]"] ],
+                            processEscapes: true,
+                            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+                        }
+                    });
+                };
+                script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') +
+                    'cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+                d.getElementsByTagName('head')[0].appendChild(script);
+            }(document));
+        </script>
+    </body>
+</html>

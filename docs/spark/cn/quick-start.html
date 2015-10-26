@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>快速上手 - Spark 1.5.1 Documentation</title>
+        
+          <meta name="description" content="Spark 1.5.1 快速上手指南">
+        
+
+        
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+            body {
+                padding-top: 60px;
+                padding-bottom: 40px;
+            }
+        </style>
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+
+        <link rel="stylesheet" href="css/pygments-default.css">
+
+        
+
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+        <![endif]-->
+
+        <!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
+
+        <div class="navbar navbar-fixed-top" id="topbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    <div class="brand"><a href="index.html">
+                      <img src="img/spark-logo-hd.png" style="height:50px;"/></a><span class="version">1.5.1</span>
+                    </div>
+                    <ul class="nav">
+                        <!--TODO(andyk): Add class="active" attribute to li some how.-->
+                        <li><a href="index.html">Overview</a></li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Programming Guides<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="quick-start.html">Quick Start</a></li>
+                                <li><a href="programming-guide.html">Spark Programming Guide</a></li>
+                                <li class="divider"></li>
+                                <li><a href="streaming-programming-guide.html">Spark Streaming</a></li>
+                                <li><a href="sql-programming-guide.html">DataFrames and SQL</a></li>
+                                <li><a href="mllib-guide.html">MLlib (Machine Learning)</a></li>
+                                <li><a href="graphx-programming-guide.html">GraphX (Graph Processing)</a></li>
+                                <li><a href="bagel-programming-guide.html">Bagel (Pregel on Spark)</a></li>
+                                <li><a href="sparkr.html">SparkR (R on Spark)</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">API Docs<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="api/scala/index.html#org.apache.spark.package">Scala</a></li>
+                                <li><a href="api/java/index.html">Java</a></li>
+                                <li><a href="api/python/index.html">Python</a></li>
+                                <li><a href="api/R/index.html">R</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Deploying<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="cluster-overview.html">Overview</a></li>
+                                <li><a href="submitting-applications.html">Submitting Applications</a></li>
+                                <li class="divider"></li>
+                                <li><a href="spark-standalone.html">Spark Standalone</a></li>
+                                <li><a href="running-on-mesos.html">Mesos</a></li>
+                                <li><a href="running-on-yarn.html">YARN</a></li>
+                                <li class="divider"></li>
+                                <li><a href="ec2-scripts.html">Amazon EC2</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a href="api.html" class="dropdown-toggle" data-toggle="dropdown">More<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="configuration.html">Configuration</a></li>
+                                <li><a href="monitoring.html">Monitoring</a></li>
+                                <li><a href="tuning.html">Tuning Guide</a></li>
+                                <li><a href="job-scheduling.html">Job Scheduling</a></li>
+                                <li><a href="security.html">Security</a></li>
+                                <li><a href="hardware-provisioning.html">Hardware Provisioning</a></li>
+                                <li><a href="hadoop-third-party-distributions.html">3<sup>rd</sup>-Party Hadoop Distros</a></li>
+                                <li class="divider"></li>
+                                <li><a href="building-spark.html">Building Spark</a></li>
+                                <li><a href="https://cwiki.apache.org/confluence/display/SPARK/Contributing+to+Spark">Contributing to Spark</a></li>
+                                <li><a href="https://cwiki.apache.org/confluence/display/SPARK/Supplemental+Spark+Projects">Supplemental Projects</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!--<p class="navbar-text pull-right"><span class="version-text">v1.5.1</span></p>-->
+                </div>
+            </div>
+        </div>
+
+        <div class="container" id="content">
+          
+            <h1 class="title">快速上手</h1>
+          
+
+          <ul id="markdown-toc">
+  <li><a href="#spark-shell" id="markdown-toc-spark-shell">使用Spark Shell进行交互式分析</a>    <ul>
+      <li><a href="#section" id="markdown-toc-section">基础</a></li>
+      <li><a href="#rdd" id="markdown-toc-rdd">更多的RDD操作</a></li>
+      <li><a href="#section-1" id="markdown-toc-section-1">缓存</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-2" id="markdown-toc-section-2">自包含的应用</a></li>
+  <li><a href="#section-3" id="markdown-toc-section-3">接下来&#8230;&#8230;</a></li>
+</ul>
+
+<p>这篇指南是对Spark的一篇简要介绍。我们首先通过Spark的交互式shell命令行(Python或Scala语言)来简要介绍其API，
+然后展示如何使用Java，Scala和Python语言来写Spark应用。
+详尽内容请查看<a href="programming-guide.html">programming guide</a></p>
+
+<p>在继续本指南之前，请先从<a href="http://spark.apache.org/downloads.html">Spark website</a>下载Spark的正式发行包。
+由于我们不打算使用HDFS，所以您可以自由下载任何版本的Hadoop。</p>
+
+<h1 id="spark-shell">使用Spark Shell进行交互式分析</h1>
+
+<h2 id="section">基础</h2>
+
+<p>Spark shell提供了一种学习Spark API的比较简洁的方式，但同时也是一种很强大的交互式数据分析工具。
+我们可以通过Scala(运行在JVM之上，因而可以很方便的使用已有的Java语言库)或者Python来使用Spark shell。
+我们可以通过在Spark安装目录下运行以下命令来启动：</p>
+
+<div class="codetabs">
+<div data-lang="scala">
+
+    <pre><code>./bin/spark-shell
+</code></pre>
+
+    <p>Spark最主要的抽象对象是一个分布式的集合，称为弹性分布式数据集(RDD)。RDD可以通过Hadoop的输入格式(比如HDFS文件)或者通过其他RDD转换而获得。让我们通过转换Spark安装目录下的README文件来获得一个新的RDD：</p>
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">textFile</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;README.md&quot;</span><span class="o">)</span>
+<span class="n">textFile</span><span class="k">:</span> <span class="kt">spark.RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="nc">MappedRDD</span><span class="k">@</span><span class="mi">2</span><span class="n">ee9b6e3</span></code></pre></div>
+
+    <p>RDDs拥有 <em><a href="programming-guide.html#actions">actions</a></em> API, 它们可以返回一些值, 并且拥有 <em><a href="programming-guide.html#transformations">transformations</a></em> API, 它们可以返回一些对新建RDD的指针. 让我们从actions开始:</p>
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="n">textFile</span><span class="o">.</span><span class="n">count</span><span class="o">()</span> <span class="c1">// 该RDD中所包含的项目</span>
+<span class="n">res0</span><span class="k">:</span> <span class="kt">Long</span> <span class="o">=</span> <span class="mi">126</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">textFile</span><span class="o">.</span><span class="n">first</span><span class="o">()</span> <span class="c1">// 该RDD中的第一个项目</span>
+<span class="n">res1</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="k">#</span> <span class="nc">Apache</span> <span class="nc">Spark</span></code></pre></div>
+
+    <p>下面我们尝试使用一个transformation. 我们打算使用 <a href="programming-guide.html#transformations"><code>filter</code></a> transformation 来返回一个新的包含文件中某些数据的RDD。</p>
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">linesWithSpark</span> <span class="k">=</span> <span class="n">textFile</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">contains</span><span class="o">(</span><span class="s">&quot;Spark&quot;</span><span class="o">))</span>
+<span class="n">linesWithSpark</span><span class="k">:</span> <span class="kt">spark.RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="nc">FilteredRDD</span><span class="k">@</span><span class="mi">7</span><span class="n">dd4af09</span></code></pre></div>
+
+    <p>我们可以通过链式调用将transformations和actions串联起来:</p>
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="n">textFile</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">contains</span><span class="o">(</span><span class="s">&quot;Spark&quot;</span><span class="o">)).</span><span class="n">count</span><span class="o">()</span> <span class="c1">// 有多少行包含 &quot;Spark&quot;?</span>
+<span class="n">res3</span><span class="k">:</span> <span class="kt">Long</span> <span class="o">=</span> <span class="mi">15</span></code></pre></div>
+
+  </div>
+<div data-lang="python">
+
+    <pre><code>./bin/pyspark
+</code></pre>
+
+    <p>Spark最主要的抽象对象是一个分布式的集合，称为弹性分布式数据集(RDD)。RDD可以通过Hadoop的输入格式(比如HDFS文件)或者通过其他RDD转换而获得。让我们通过转换Spark安装目录下的README文件来获得一个新的RDD：</p>
+
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">textFile</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s">&quot;README.md&quot;</span><span class="p">)</span></code></pre></div>
+
+    <p>RDDs拥有 <em><a href="programming-guide.html#actions">actions</a></em> API, 它们可以返回一些值, 并且拥有 <em><a href="programming-guide.html#transformations">transformations</a></em> API, 它们可以返回一些对新建RDD的指针. 让我们从actions开始:</p>
+
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">textFile</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="c"># 该RDD中所包含的项目</span>
+<span class="mi">126</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">textFile</span><span class="o">.</span><span class="n">first</span><span class="p">()</span> <span class="c"># 该RDD中的第一个项目</span>
+<span class="s">u&#39;# Apache Spark&#39;</span></code></pre></div>
+
+    <p>下面我们尝试使用一个transformation. 我们打算使用 <a href="programming-guide.html#transformations"><code>filter</code></a> transformation 来返回一个新的包含文件中某些数据的RDD。</p>
+
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">linesWithSpark</span> <span class="o">=</span> <span class="n">textFile</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="s">&quot;Spark&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span></code></pre></div>
+
+    <p>我们可以通过链式调用将transformations和actions串联起来:</p>
+
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">textFile</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="s">&quot;Spark&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="c"># 有多少行包含 &quot;Spark&quot;?</span>
+<span class="mi">15</span></code></pre></div>
+
+  </div>
+</div>
+
+<h2 id="rdd">更多的RDD操作</h2>
+<p>RDD actions及transformations可被用于更复杂的计算. 比如我们想要找到包含最多词的一行：</p>
+
+<div class="codetabs">
+<div data-lang="scala">
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="n">textFile</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot; &quot;</span><span class="o">).</span><span class="n">size</span><span class="o">).</span><span class="n">reduce</span><span class="o">((</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="k">if</span> <span class="o">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="o">)</span> <span class="n">a</span> <span class="k">else</span> <span class="n">b</span><span class="o">)</span>
+<span class="n">res4</span><span class="k">:</span> <span class="kt">Long</span> <span class="o">=</span> <span class="mi">15</span></code></pre></div>
+
+    <p>第一个map调用将每一行文字对应转换成对应的一个该行含有的词的个数，并将结果构造成一个RDD。接下来的<code>reduce</code>操作针对这个RDD找出了含词数最大的一行的词数。<code>map</code>和<code>reduce</code>调用的参数是Scala的函数字面量(闭包)，并且可以使用任何Scala的语言特性或Scala/Java的包。例如我们可以很轻松的调用任何其他地方声明的函数。我们可以使用<code>Math.max()</code>函数来使代码看起来更容易理解：</p>
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">java.lang.Math</span>
+<span class="k">import</span> <span class="nn">java.lang.Math</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">textFile</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot; &quot;</span><span class="o">).</span><span class="n">size</span><span class="o">).</span><span class="n">reduce</span><span class="o">((</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Math</span><span class="o">.</span><span class="n">max</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">))</span>
+<span class="n">res5</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">15</span></code></pre></div>
+
+    <p>一个通用的数据流模式便是在Hadoop里非常流行的MapReduce。 Spark可以非常轻松的实现MapReduce流:</p>
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">wordCounts</span> <span class="k">=</span> <span class="n">textFile</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot; &quot;</span><span class="o">)).</span><span class="n">map</span><span class="o">(</span><span class="n">word</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">word</span><span class="o">,</span> <span class="mi">1</span><span class="o">)).</span><span class="n">reduceByKey</span><span class="o">((</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">)</span>
+<span class="n">wordCounts</span><span class="k">:</span> <span class="kt">spark.RDD</span><span class="o">[(</span><span class="kt">String</span>, <span class="kt">Int</span><span class="o">)]</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="nc">ShuffledAggregatedRDD</span><span class="k">@</span><span class="mi">71</span><span class="n">f027b8</span></code></pre></div>
+
+    <p>这里，我们将<a href="programming-guide.html#transformations"><code>flatMap</code></a>，<a href="programming-guide.html#transformations"><code>map</code></a>
+以及<a href="programming-guide.html#transformations"><code>reduceByKey</code></a>三个transformation进行组合，
+从而计算并生成包含该文件中每个词的个数的RDD，包含结果以(String,Int)的元组来存放。
+为了收集这些结果，我们可以使用<a href="programming-guide.html#actions"><code>collect</code></a> action</p>
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="n">wordCounts</span><span class="o">.</span><span class="n">collect</span><span class="o">()</span>
+<span class="n">res6</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[(</span><span class="kt">String</span>, <span class="kt">Int</span><span class="o">)]</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">((</span><span class="n">means</span><span class="o">,</span><span class="mi">1</span><span class="o">),</span> <span class="o">(</span><span class="n">under</span><span class="o">,</span><span class="mi">2</span><span class="o">),</span> <span class="o">(</span><span class="k">this</span><span class="o">,</span><span class="mi">3</span><span class="o">),</span> <span class="o">(</span><span class="nc">Because</span><span class="o">,</span><span class="mi">1</span><span class="o">),</span> <span class="o">(</span><span class="nc">Python</span><span class="o">,</span><span class="mi">2</span><span class="o">),</span> <span class="o">(</span><span class="n">agree</span><span class="o">,</span><span class="mi">1</span><span class="o">),</span> <span class="o">(</span><span class="n">cluster</span><span class="o">.,</span><span class="mi">1</span><span class="o">),</span> <span class="o">...)</span></code></pre></div>
+
+  </div>
+<div data-lang="python">
+
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">textFile</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="k">else</span> <span class="n">b</span><span class="p">)</span>
+<span class="mi">15</span></code></pre></div>
+
+    <p>第一个map调用将每一行文字对应转换成对应的一个该行含有的词的个数，并将结果构造成一个RDD。
+接下来的<code>reduce</code>操作针对这个RDD找出了含词数最大的一行的词数。
+<code>map</code>和<code>reduce</code>调用的参数是Python的<a href="https://docs.python.org/2/reference/expressions.html#lambda">匿名函数(lambdas)</a>，
+但我们同样也可以传递任何我们想要的顶级Python函数。例如我们可以定义一个<code>max</code>函数从而使代码更容易理解：</p>
+
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">max</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">:</span>
+<span class="o">...</span>         <span class="k">return</span> <span class="n">a</span>
+<span class="o">...</span>     <span class="k">else</span><span class="p">:</span>
+<span class="o">...</span>         <span class="k">return</span> <span class="n">b</span>
+<span class="o">...</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">textFile</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="nb">max</span><span class="p">)</span>
+<span class="mi">15</span></code></pre></div>
+
+    <p>一个通用的数据流模式便是在Hadoop里非常流行的MapReduce。 Spark可以非常轻松的实现MapReduce流:</p>
+
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">wordCounts</span> <span class="o">=</span> <span class="n">textFile</span><span class="o">.</span><span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">reduceByKey</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span></code></pre></div>
+
+    <p>这里，我们将<a href="programming-guide.html#transformations"><code>flatMap</code></a>，<a href="programming-guide.html#transformations"><code>map</code></a>
+以及<a href="programming-guide.html#transformations"><code>reduceByKey</code></a>三个transformation进行组合，
+从而计算并生成包含该文件中每个词的个数的RDD，包含结果以(String,Int)的元组来存放。
+为了收集这些结果，我们可以使用<a href="programming-guide.html#actions"><code>collect</code></a> action</p>
+
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">wordCounts</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="p">[(</span><span class="s">u&#39;and&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="s">u&#39;A&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">u&#39;webpage&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">u&#39;README&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">u&#39;Note&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">u&#39;&quot;local&quot;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">u&#39;variable&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span></code></pre></div>
+
+  </div>
+</div>
+
+<h2 id="section-1">缓存</h2>
+<p>Spark同样也支持将数据集加载入集群范围内的内存缓存中。它对于重复访问的情形非常有用，比如查询在查询一些小的“热点”数据集的时候或是运行一些像PageRank一样的迭代算法的时候。作为一个简单的例子，让我们将我们的<code>linesWithSpark</code>数据集标记为需要缓存：</p>
+
+<div class="codetabs">
+<div data-lang="scala">
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="n">linesWithSpark</span><span class="o">.</span><span class="n">cache</span><span class="o">()</span>
+<span class="n">res7</span><span class="k">:</span> <span class="kt">spark.RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="nc">FilteredRDD</span><span class="k">@</span><span class="mi">17</span><span class="n">e51082</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">linesWithSpark</span><span class="o">.</span><span class="n">count</span><span class="o">()</span>
+<span class="n">res8</span><span class="k">:</span> <span class="kt">Long</span> <span class="o">=</span> <span class="mi">19</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">linesWithSpark</span><span class="o">.</span><span class="n">count</span><span class="o">()</span>
+<span class="n">res9</span><span class="k">:</span> <span class="kt">Long</span> <span class="o">=</span> <span class="mi">19</span></code></pre></div>
+
+    <p>也许使用Spark来查看和缓存一个只有100行文本的文件看起来有些愚蠢。但真正有趣的地方却在于这些同样的函数也
+可以用在非常大的数据集中，即使这些数据集分布在数以百计的节点上。你同样可以通过<code>bin/spark-shell</code>连接到一个
+集群上来交互式的执行这些函数，就像在<a href="programming-guide.html#initializing-spark">programming guide</a>描述的那样。</p>
+
+  </div>
+<div data-lang="python">
+
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">linesWithSpark</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">linesWithSpark</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="mi">19</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">linesWithSpark</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="mi">19</span></code></pre></div>
+
+    <p>也许使用Spark来查看和缓存一个只有100行文本的文件看起来有些愚蠢。但真正有趣的地方却在于这些同样的函数也
+可以用在非常大的数据集中，即使这些数据集分布在数以百计的节点上。你同样可以通过<code>bin/pyspark</code>连接到一个
+集群上来交互式的执行这些函数，就像在<a href="programming-guide.html#initializing-spark">programming guide</a>描述的那样。</p>
+
+  </div>
+</div>
+
+<h1 id="section-2">自包含的应用</h1>
+<p>假设我们打算用Spark API写一个自包含的应用。我们来看看如何使用Scala(使用sbt)，Java(使用Maven)以及Python来写这个简单的应用。</p>
+
+<div class="codetabs">
+<div data-lang="scala">
+
+    <p>我们先用Scala创建一个非常简单的Spark应用&#8211;简单到它的名字就叫<code>SimpleApp.scala</code>:</p>
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="cm">/* SimpleApp.scala */</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.SparkContext</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.SparkContext._</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.SparkConf</span>
+
+<span class="k">object</span> <span class="nc">SimpleApp</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="n">logFile</span> <span class="k">=</span> <span class="s">&quot;YOUR_SPARK_HOME/README.md&quot;</span> <span class="c1">// 这里可以是你系统中的任意文件</span>
+    <span class="k">val</span> <span class="n">conf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="n">setAppName</span><span class="o">(</span><span class="s">&quot;Simple Application&quot;</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkContext</span><span class="o">(</span><span class="n">conf</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">logData</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="n">logFile</span><span class="o">,</span> <span class="mi">2</span><span class="o">).</span><span class="n">cache</span><span class="o">()</span>
+    <span class="k">val</span> <span class="n">numAs</span> <span class="k">=</span> <span class="n">logData</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">contains</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">)).</span><span class="n">count</span><span class="o">()</span>
+    <span class="k">val</span> <span class="n">numBs</span> <span class="k">=</span> <span class="n">logData</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">contains</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">)).</span><span class="n">count</span><span class="o">()</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">&quot;Lines with a: %s, Lines with b: %s&quot;</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="n">numAs</span><span class="o">,</span> <span class="n">numBs</span><span class="o">))</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></div>
+
+    <p>注意你的应用应当定义一个<code>main()</code>方法，而不是去继承<code>scala.App</code>。在这里<code>scala.App</code>的子类可能无法正确工作。</p>
+
+    <p>这段程序只是统计了一下Spark README文件中包含字母&#8217;a&#8217;的行数以及包含字母&#8217;b&#8217;的行数。注意你需要将YOUR_SPARK_HOME替换为
+你的Spark的安装位置。不像之前使用Spark shell时的例子(已经初始化了其自己的SparkContext)，我们需要在程序中自己初始化
+SparkContext。</p>
+
+    <p>我们将一个包含我们程序信息的<a href="api/scala/index.html#org.apache.spark.SparkConf">SparkConf</a>
+对象作为参数传递给SparkContext的构造函数。</p>
+
+    <p>我们的程序依赖于Spark API，所以我们需要将一个sbt的配置文件<code>simple.sbt</code>包含进来，它将Spark声明为依赖。
+这个文件同时还加入了Spark所需要的依赖仓库：</p>
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">name</span> <span class="o">:=</span> <span class="s">&quot;Simple Project&quot;</span>
+
+<span class="n">version</span> <span class="o">:=</span> <span class="s">&quot;1.0&quot;</span>
+
+<span class="n">scalaVersion</span> <span class="o">:=</span> <span class="s">&quot;2.10.4&quot;</span>
+
+<span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">&quot;org.apache.spark&quot;</span> <span class="o">%%</span> <span class="s">&quot;spark-core&quot;</span> <span class="o">%</span> <span class="s">&quot;1.5.1&quot;</span></code></pre></div>
+
+    <p>为了让sbt可以正确工作，我们需要将<code>SimpleApp.scala</code>和<code>simple.sbt</code>按照标准的目录结构放置。
+一旦完成，我们可以创建一个jar包来包含程序代码，然后使用<code>spark-submit</code>脚本来运行我们的程序。</p>
+
+    <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># 你的目录结构应该像以下这样</span>
+<span class="nv">$ </span>find .
+.
+./simple.sbt
+./src
+./src/main
+./src/main/scala
+./src/main/scala/SimpleApp.scala
+
+<span class="c"># 将你的程序打包成jar</span>
+<span class="nv">$ </span>sbt package
+...
+<span class="o">[</span>info<span class="o">]</span> Packaging <span class="o">{</span>..<span class="o">}</span>/<span class="o">{</span>..<span class="o">}</span>/target/scala-2.10/simple-project_2.10-1.0.jar
+
+<span class="c"># 使用spark-submit来运行你的程序</span>
+<span class="nv">$ </span>YOUR_SPARK_HOME/bin/spark-submit <span class="se">\</span>
+  --class <span class="s2">&quot;SimpleApp&quot;</span> <span class="se">\</span>
+  --master <span class="nb">local</span><span class="o">[</span>4<span class="o">]</span> <span class="se">\</span>
+  target/scala-2.10/simple-project_2.10-1.0.jar
+...
+Lines with a: 46, Lines with b: 23</code></pre></div>
+
+  </div>
+<div data-lang="java">
+    <p>这个例子将要使用Maven来编译一个应用jar，但任何相似的构建系统都可以工作</p>
+
+    <p>我们先创建一个非常简单的Spark应用，<code>SimpleApp.java</code>：</p>
+
+    <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="cm">/* SimpleApp.java */</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.api.java.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.SparkConf</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.api.java.function.Function</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleApp</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="n">logFile</span> <span class="o">=</span> <span class="s">&quot;YOUR_SPARK_HOME/README.md&quot;</span><span class="o">;</span> <span class="c1">// 这里可以是你系统中的任意文件</span>
+    <span class="n">SparkConf</span> <span class="n">conf</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SparkConf</span><span class="o">().</span><span class="na">setAppName</span><span class="o">(</span><span class="s">&quot;Simple Application&quot;</span><span class="o">);</span>
+    <span class="n">JavaSparkContext</span> <span class="n">sc</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">JavaSparkContext</span><span class="o">(</span><span class="n">conf</span><span class="o">);</span>
+    <span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">logData</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">textFile</span><span class="o">(</span><span class="n">logFile</span><span class="o">).</span><span class="na">cache</span><span class="o">();</span>
+
+    <span class="kt">long</span> <span class="n">numAs</span> <span class="o">=</span> <span class="n">logData</span><span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">&gt;()</span> <span class="o">{</span>
+      <span class="kd">public</span> <span class="n">Boolean</span> <span class="nf">call</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">);</span> <span class="o">}</span>
+    <span class="o">}).</span><span class="na">count</span><span class="o">();</span>
+
+    <span class="kt">long</span> <span class="n">numBs</span> <span class="o">=</span> <span class="n">logData</span><span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">&gt;()</span> <span class="o">{</span>
+      <span class="kd">public</span> <span class="n">Boolean</span> <span class="nf">call</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">);</span> <span class="o">}</span>
+    <span class="o">}).</span><span class="na">count</span><span class="o">();</span>
+
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Lines with a: &quot;</span> <span class="o">+</span> <span class="n">numAs</span> <span class="o">+</span> <span class="s">&quot;, lines with b: &quot;</span> <span class="o">+</span> <span class="n">numBs</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></div>
+
+    <p>这段程序只是统计了一下Spark README文件中包含字母&#8217;a&#8217;的行数以及包含字母&#8217;b&#8217;的行数。注意你需要将YOUR_SPARK_HOME替换为
+你的Spark的安装位置。就像在Scala例子中我们初始化了SparkContext一样，类似的我们需要使用一个特殊的<code>JavaSparkContext</code>类
+来获得一个Java版本的Context。我们同样创建了RDD(通过<code>JavaRDD</code>来表示)并且在其上运行transformation。最后，我们通过创建
+<code>spark.api.java.function.Function</code>类的子类来向Spark传递函数。<a href="programming-guide.html">Spark programming guide</a>
+更详细的描述了之间的区别。</p>
+
+    <p>我们需要来创建一个声明Spark为依赖库的Maven <code>pom.xml</code>文件来构建程序。需要注意Spark的artifact需要声明Scala的版本。</p>
+
+    <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;project&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>edu.berkeley<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>simple-project<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;name&gt;</span>Simple Project<span class="nt">&lt;/name&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>jar<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span> <span class="c">&lt;!-- Spark dependency --&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.spark<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>spark-core_2.10<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>1.5.1<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+<span class="nt">&lt;/project&gt;</span></code></pre></div>
+
+    <p>我们需要按照统一的Maven项目结构来安排我们的程序文件。</p>
+
+    <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>find .
+./pom.xml
+./src
+./src/main
+./src/main/java
+./src/main/java/SimpleApp.java</code></pre></div>
+
+    <p>现在我们可以使用Maven来打包我们的程序，并通过<code>./bin/spark-submit</code>来执行了。</p>
+
+    <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># 将你的程序打包成jar</span>
+<span class="nv">$ </span>mvn package
+...
+<span class="o">[</span>INFO<span class="o">]</span> Building jar: <span class="o">{</span>..<span class="o">}</span>/<span class="o">{</span>..<span class="o">}</span>/target/simple-project-1.0.jar
+
+<span class="c"># 使用spark-submit来运行你的程序</span>
+<span class="nv">$ </span>YOUR_SPARK_HOME/bin/spark-submit <span class="se">\</span>
+  --class <span class="s2">&quot;SimpleApp&quot;</span> <span class="se">\</span>
+  --master <span class="nb">local</span><span class="o">[</span>4<span class="o">]</span> <span class="se">\</span>
+  target/simple-project-1.0.jar
+...
+Lines with a: 46, Lines with b: 23</code></pre></div>
+
+  </div>
+<div data-lang="python">
+
+    <p>接下来我们将要展示如何通过Python API(PySpark)来编写应用了。</p>
+
+    <p>作为例子，我们首先创建一个简单的Spark程序，<code>SimpleApp.py</code>：</p>
+
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="sd">&quot;&quot;&quot;SimpleApp.py&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">SparkContext</span>
+
+<span class="n">logFile</span> <span class="o">=</span> <span class="s">&quot;YOUR_SPARK_HOME/README.md&quot;</span>  <span class="c"># 这里可以是你系统中的任意文件</span>
+<span class="n">sc</span> <span class="o">=</span> <span class="n">SparkContext</span><span class="p">(</span><span class="s">&quot;local&quot;</span><span class="p">,</span> <span class="s">&quot;Simple App&quot;</span><span class="p">)</span>
+<span class="n">logData</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="n">logFile</span><span class="p">)</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span>
+
+<span class="n">numAs</span> <span class="o">=</span> <span class="n">logData</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s">&#39;a&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">numBs</span> <span class="o">=</span> <span class="n">logData</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s">&#39;b&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Lines with a: </span><span class="si">%i</span><span class="s">, lines with b: </span><span class="si">%i</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">numAs</span><span class="p">,</span> <span class="n">numBs</span><span class="p">))</span></code></pre></div>
+
+    <p>这段程序只是统计了一下Spark README文件中包含字母&#8217;a&#8217;的行数以及包含字母&#8217;b&#8217;的行数。注意你需要将YOUR_SPARK_HOME替换为
+你的Spark的安装位置。就像在Scala和Java的例子中一样，我们使用SparkContext来创建RDD。我们可以给Spark传递Python函数，
+这些函数会自动将它们本身以及它们所引用的变量进行序列化。
+对那些使用自定义类和第三方库的程序，我们也可以通过使用带<code>--py-files</code>参数的<code>spark-submit</code>命令来将它们打入一个zip包中
+(详情请见<code>spark-submit --help</code>)。
+<code>SimpleApp</code>很简单，所以不需要声明任何代码依赖。</p>
+
+    <p>我们可以使用<code>bin/spark-submit</code>来运行程序：</p>
+
+    <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># 使用spark-submit来运行你的程序</span>
+<span class="nv">$ </span>YOUR_SPARK_HOME/bin/spark-submit <span class="se">\</span>
+  --master <span class="nb">local</span><span class="o">[</span>4<span class="o">]</span> <span class="se">\</span>
+  SimpleApp.py
+...
+Lines with a: 46, Lines with b: 23</code></pre></div>
+
+  </div>
+</div>
+
+<h1 id="section-3">接下来&#8230;&#8230;</h1>
+<p>首先恭喜您已经运行了您的第一个Spark程序！</p>
+
+<ul>
+  <li>如果想进一步查看一下API，请参见<a href="programming-guide.html">Spark编程指南</a>，或查看&#8221;Programming Guides&#8221;目录来查看其它组件。</li>
+  <li>如果想在集群上运行程序，请参见<a href="cluster-overview.html">部署指南</a>。</li>
+  <li>最后，在<code>examples</code>目录下有一些Spark的例子可供参考。
+(<a href="https://github.com/apache/spark/tree/master/examples/src/main/scala/org/apache/spark/examples">Scala</a>,
+ <a href="https://github.com/apache/spark/tree/master/examples/src/main/java/org/apache/spark/examples">Java</a>,
+ <a href="https://github.com/apache/spark/tree/master/examples/src/main/python">Python</a>,
+ <a href="https://github.com/apache/spark/tree/master/examples/src/main/r">R</a>).
+您可以通过以下方式来运行:</li>
+</ul>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># 对于Scala和Java, 使用run-example:</span>
+./bin/run-example SparkPi
+
+<span class="c"># 对于Python, 直接使用spark-submit:</span>
+./bin/spark-submit examples/src/main/python/pi.py
+
+<span class="c"># 对于R, 直接使用spark-submit:</span>
+./bin/spark-submit examples/src/main/r/dataframe.R</code></pre></div>
+
+
+
+        </div> <!-- /container -->
+
+        <script src="js/vendor/jquery-1.8.0.min.js"></script>
+        <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/vendor/anchor.min.js"></script>
+        <script src="js/main.js"></script>
+
+        <!-- MathJax Section -->
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                TeX: { equationNumbers: { autoNumber: "AMS" } }
+            });
+        </script>
+        <script>
+            // Note that we load MathJax this way to work with local file (file://), HTTP and HTTPS.
+            // We could use "//cdn.mathjax...", but that won't support "file://".
+            (function(d, script) {
+                script = d.createElement('script');
+                script.type = 'text/javascript';
+                script.async = true;
+                script.onload = function(){
+                    MathJax.Hub.Config({
+                        tex2jax: {
+                            inlineMath: [ ["$", "$"], ["\\\\(","\\\\)"] ],
+                            displayMath: [ ["$$","$$"], ["\\[", "\\]"] ],
+                            processEscapes: true,
+                            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+                        }
+                    });
+                };
+                script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') +
+                    'cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+                d.getElementsByTagName('head')[0].appendChild(script);
+            }(document));
+        </script>
+    </body>
+</html>
