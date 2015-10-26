@@ -1021,34 +1021,32 @@ Documentation</a>。</p>
 </tr>
 <tr>
   <td> <b>sample</b>(<i>withReplacement</i>, <i>fraction</i>, <i>seed</i>) </td>
-  <td> Sample a fraction <i>fraction</i> of the data, with or without replacement, using a given random number generator seed. </td>
+  <td> 根据<i>fraction</i>指定的精度，对数据进行小规模取样，可选择是否用随机数替换，<i>seed</i>用于指定随机数生成器的种子。 </td>
 </tr>
 <tr>
   <td> <b>union</b>(<i>otherDataset</i>) </td>
-  <td> Return a new dataset that contains the union of the elements in the source dataset and the argument. </td>
+  <td> 返回一个包含当前数据集和参数<i>otherDataset</i>中所有元素的并集的新数据集。 </td>
 </tr>
 <tr>
   <td> <b>intersection</b>(<i>otherDataset</i>) </td>
-  <td> Return a new RDD that contains the intersection of elements in the source dataset and the argument. </td>
+  <td> 返回一个包含当前数据集和参数<i>otherDataset</i>中所有元素的交集的新数据集。 </td>
 </tr>
 <tr>
   <td> <b>distinct</b>([<i>numTasks</i>])) </td>
-  <td> Return a new dataset that contains the distinct elements of the source dataset.</td>
+  <td> 返回一个包含当前数据集中所有不重复元素的新数据集。</td>
 </tr>
 <tr>
   <td> <b>groupByKey</b>([<i>numTasks</i>]) <a name="GroupByLink"></a> </td>
-  <td> When called on a dataset of (K, V) pairs, returns a dataset of (K, Iterable&lt;V&gt;) pairs. <br />
-    <b>Note:</b> If you are grouping in order to perform an aggregation (such as a sum or
-      average) over each key, using <code>reduceByKey</code> or <code>aggregateByKey</code> will yield much better 
-      performance.
-    <br />
-    <b>Note:</b> By default, the level of parallelism in the output depends on the number of partitions of the parent RDD.
-      You can pass an optional <code>numTasks</code> argument to set a different number of tasks.
+  <td> 在一个（K, V）对的数据集上调用，返回一个(K，Iterable&lt;V&gt;)对的数据集。<br />
+       <b>注意：</b>如果你使用grouping来对每个key执行聚集操作(比如sum或average)，使用<code>reduceByKey</code>或<code>aggregateByKey</code>
+       会获得更好的性能。
+       <b>注意：</b>默认情况下，并行任务数要依赖于父RDD的分区数目。你可以传入一个可选的numTasks参数来改变任务数。
   </td>
 </tr>
 <tr>
   <td> <b>reduceByKey</b>(<i>func</i>, [<i>numTasks</i>]) <a name="ReduceByLink"></a> </td>
-  <td> When called on a dataset of (K, V) pairs, returns a dataset of (K, V) pairs where the values for each key are aggregated using the given reduce function <i>func</i>, which must be of type (V,V) =&gt; V. Like in <code>groupByKey</code>, the number of reduce tasks is configurable through an optional second argument. </td>
+  <td> 在一个(K，V)对的数据集上调用时，返回一个(K，V)对的数据集，使用指定的reduce函数<i>func</i>，将相同key的值聚合到一起。<i>func</i>应当是(V,V) =&gt; V 类型的。
+  类似<code>groupByKey</code>，reduce任务个数是可以通过第二个可选参数来配置的。</td>
 </tr>
 <tr>
   <td> <b>aggregateByKey</b>(<i>zeroValue</i>)(<i>seqOp</i>, <i>combOp</i>, [<i>numTasks</i>]) <a name="AggregateByLink"></a> </td>
