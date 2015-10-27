@@ -135,10 +135,31 @@
           </li>
           <li><a href="#key-value" id="markdown-toc-key-value">使用key-value键值对</a></li>
           <li><a href="#transformation" id="markdown-toc-transformation">转换(Transformation)</a></li>
+          <li><a href="#actions" id="markdown-toc-actions">Actions</a></li>
+          <li><a href="#shuffle-operations" id="markdown-toc-shuffle-operations">Shuffle operations</a>            <ul>
+              <li><a href="#background" id="markdown-toc-background">Background</a></li>
+              <li><a href="#performance-impact" id="markdown-toc-performance-impact">Performance Impact</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#rdd-persistence" id="markdown-toc-rdd-persistence">RDD Persistence</a>        <ul>
+          <li><a href="#which-storage-level-to-choose" id="markdown-toc-which-storage-level-to-choose">Which Storage Level to Choose?</a></li>
+          <li><a href="#removing-data" id="markdown-toc-removing-data">Removing Data</a></li>
         </ul>
       </li>
     </ul>
   </li>
+  <li><a href="#shared-variables" id="markdown-toc-shared-variables">Shared Variables</a>    <ul>
+      <li><a href="#broadcast-variables" id="markdown-toc-broadcast-variables">Broadcast Variables</a></li>
+      <li><a href="#accumulators-a-nameaccumlinka" id="markdown-toc-accumulators-a-nameaccumlinka">Accumulators <a name="AccumLink"></a></a></li>
+    </ul>
+  </li>
+  <li><a href="#deploying-to-a-cluster" id="markdown-toc-deploying-to-a-cluster">Deploying to a Cluster</a></li>
+  <li><a href="#launching-spark-jobs-from-java--scala" id="markdown-toc-launching-spark-jobs-from-java--scala">Launching Spark jobs from Java / Scala</a></li>
+  <li><a href="#unit-testing" id="markdown-toc-unit-testing">Unit Testing</a></li>
+  <li><a href="#migrating-from-pre-10-versions-of-spark" id="markdown-toc-migrating-from-pre-10-versions-of-spark">Migrating from pre-1.0 Versions of Spark</a></li>
+  <li><a href="#where-to-go-from-here" id="markdown-toc-where-to-go-from-here">Where to Go from Here</a></li>
 </ul>
 
 <h1 id="section">概览</h1>
@@ -933,7 +954,7 @@ executor对<code>stdout</code>所执行的输出已经被重定向到了executor
 <span class="k">val</span> <span class="n">pairs</span> <span class="k">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">s</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">s</span><span class="o">,</span> <span class="mi">1</span><span class="o">))</span>
 <span class="k">val</span> <span class="n">counts</span> <span class="k">=</span> <span class="n">pairs</span><span class="o">.</span><span class="n">reduceByKey</span><span class="o">((</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">)</span></code></pre></div>
 
-    <p>我们同样也可以使用<code>counts.sortByKey()</code>，比如，将键值对按照字母分类，并在最后通过<code>counts.collect()</code>来将它们作为一组对象返回给主驱动程序。</p>
+    <p>我们同样也可以使用<code>counts.sortByKey()</code>，比如，将键值对按照字母排序，并在最后通过<code>counts.collect()</code>来将它们作为一组对象返回给主驱动程序。</p>
 
     <p><strong>注意：</strong>当在键值对中使用自定义对象作为键时，必须保证同时拥有自定义的<code>equals()</code>方法和相匹配的<code>hashCode()</code>方法。详细情况请参看<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html#hashCode()">Object.hashCode()
 Documentation</a>。</p>
@@ -957,7 +978,7 @@ Documentation</a>。</p>
 <span class="nc">JavaPairRDD</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">pairs</span> <span class="k">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">mapToPair</span><span class="o">(</span><span class="n">s</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="nc">Tuple2</span><span class="o">(</span><span class="n">s</span><span class="o">,</span> <span class="mi">1</span><span class="o">));</span>
 <span class="nc">JavaPairRDD</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">counts</span> <span class="k">=</span> <span class="n">pairs</span><span class="o">.</span><span class="n">reduceByKey</span><span class="o">((</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">);</span></code></pre></div>
 
-    <p>我们同样也可以使用<code>counts.sortByKey()</code>，比如，将键值对按照字母分类，并在最后通过<code>counts.collect()</code>来将它们作为一组对象返回给主驱动程序。</p>
+    <p>我们同样也可以使用<code>counts.sortByKey()</code>，比如，将键值对按照字母排序，并在最后通过<code>counts.collect()</code>来将它们作为一组对象返回给主驱动程序。</p>
 
     <p><strong>注意：</strong>当在键值对中使用自定义对象作为键时，必须保证同时拥有自定义的<code>equals()</code>方法和相匹配的<code>hashCode()</code>方法。详细情况请参看<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html#hashCode()">Object.hashCode()
 Documentation</a>。</p>
@@ -977,7 +998,7 @@ Documentation</a>。</p>
 <span class="n">pairs</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="n">counts</span> <span class="o">=</span> <span class="n">pairs</span><span class="o">.</span><span class="n">reduceByKey</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span></code></pre></div>
 
-    <p>我们同样也可以使用<code>counts.sortByKey()</code>，比如，将键值对按照字母分类，并在最后通过<code>counts.collect()</code>来将它们作为一组对象返回给主驱动程序。</p>
+    <p>我们同样也可以使用<code>counts.sortByKey()</code>，比如，将键值对按照字母排序，并在最后通过<code>counts.collect()</code>来将它们作为一组对象返回给主驱动程序。</p>
 
   </div>
 
@@ -1011,8 +1032,8 @@ Documentation</a>。</p>
 <tr>
   <td> <b>mapPartitions</b>(<i>func</i>) <a name="MapPartLink"></a> </td>
   <td> 类似于map，但会在RDD的每个分区partition(或块block)上独立的运行，所以当在类型T的RDD上运行时，<i>func</i>必须是
-    Iterator&lt;T&gt; =&gt; Iterator&lt;U&gt;类型
-
+    Iterator&lt;T&gt; =&gt; Iterator&lt;U&gt;类型   </td>
+</tr>
 <tr>
   <td> <b>mapPartitionsWithIndex</b>(<i>func</i>) </td>
   <td> 类似于mapPartitions，但还提供了一个包含用来表示分区(partition)索引的整型值的<i>func</i>函数，所以当在类型T的RDD上运行时，<i>func</i>必须是
@@ -1050,62 +1071,56 @@ Documentation</a>。</p>
 </tr>
 <tr>
   <td> <b>aggregateByKey</b>(<i>zeroValue</i>)(<i>seqOp</i>, <i>combOp</i>, [<i>numTasks</i>]) <a name="AggregateByLink"></a> </td>
-  <td> When called on a dataset of (K, V) pairs, returns a dataset of (K, U) pairs where the values for each key are aggregated using the given combine functions and a neutral "zero" value. Allows an aggregated value type that is different than the input value type, while avoiding unnecessary allocations. Like in <code>groupByKey</code>, the number of reduce tasks is configurable through an optional second argument. </td>
+  <td> 在一个(K，V)对的数据集上调用时，返回一个(K,U)的数据集，使用指定的组合函数以及一个中立的"零"值。允许一个与输入值类型不同聚合值类型，用于避免没必要的分配。与<code>groupByKey</code>相似，reduce任务的数量可以通过可选的第二个参数来指定。</td>
 </tr>
 <tr>
   <td> <b>sortByKey</b>([<i>ascending</i>], [<i>numTasks</i>]) <a name="SortByLink"></a> </td>
-  <td> When called on a dataset of (K, V) pairs where K implements Ordered, returns a dataset of (K, V) pairs sorted by keys in ascending or descending order, as specified in the boolean <code>ascending</code> argument.</td>
+  <td> 在一个(K, V)对(K是可排序的)的数据集上调用时，返回一个根据key升/降序排列的(K, V)数据集，通过<code>ascending</code>参数来指定升序还是降序。</td>
 </tr>
 <tr>
   <td> <b>join</b>(<i>otherDataset</i>, [<i>numTasks</i>]) <a name="JoinLink"></a> </td>
-  <td> When called on datasets of type (K, V) and (K, W), returns a dataset of (K, (V, W)) pairs with all pairs of elements for each key.
-    Outer joins are supported through <code>leftOuterJoin</code>, <code>rightOuterJoin</code>, and <code>fullOuterJoin</code>.
+  <td> 在一个(K, V)数据集和一个(K, W)数据集上调用时，返回一个以K为key的所有V, W元素组成的tuple为值的(K, (V, W))型数据集。外连接可以通过
+	<code>leftOuterJoin</code>, <code>rightOuterJoin</code>以及<code>fullOuterJoin</code>来实现。
   </td>
 </tr>
 <tr>
   <td> <b>cogroup</b>(<i>otherDataset</i>, [<i>numTasks</i>]) <a name="CogroupLink"></a> </td>
-  <td> When called on datasets of type (K, V) and (K, W), returns a dataset of (K, (Iterable&lt;V&gt;, Iterable&lt;W&gt;)) tuples. This operation is also called <code>groupWith</code>. </td>
+  <td> 在一个(K, V)数据集和一个(K, W)数据集上调用时，返回一个(K, (Iterable&lt;V&gt;, Iterable&lt;W&gt;))类型的数据集。该操作也被叫做<code>groupWith</code>。 </td>
 </tr>
 <tr>
   <td> <b>cartesian</b>(<i>otherDataset</i>) </td>
-  <td> When called on datasets of types T and U, returns a dataset of (T, U) pairs (all pairs of elements). </td>
+  <td> 在一个T类型数据集和一个U类型数据集上调用时，返回一个(T, U)类型的数据集(包含所有T和U元素)。(笛卡尔积)</td>
 </tr>
 <tr>
   <td> <b>pipe</b>(<i>command</i>, <i>[envVars]</i>) </td>
-  <td> Pipe each partition of the RDD through a shell command, e.g. a Perl or bash script. RDD elements are written to the
-    process's stdin and lines output to its stdout are returned as an RDD of strings. </td>
+  <td> 通过一个shell命令的管道来传递RDD的每个分区，可以是perl或bash命令。 RDD元素以字符串的行是被写入到进程的标准输入stdin然后按行输出至标准输出stdout中。 </td>
 </tr>
 <tr>
   <td> <b>coalesce</b>(<i>numPartitions</i>) <a name="CoalesceLink"></a> </td>
-  <td> Decrease the number of partitions in the RDD to numPartitions. Useful for running operations more efficiently
-    after filtering down a large dataset. </td>
+  <td> 将RDD的分区数目减少至numPartitions。适用于需要在过滤完一个大的数据集后更有效率的运行。</td>
 </tr>
 <tr>
   <td> <b>repartition</b>(<i>numPartitions</i>) </td>
-  <td> Reshuffle the data in the RDD randomly to create either more or fewer partitions and balance it across them.
-    This always shuffles all data over the network. <a name="RepartitionLink"></a></td>
+  <td> 对RDD内数据随机的重新进行shuffle以创建更多或更少的分区，然后将数据重新平均分配至这些分区。该操作总会将整个网络内的数据进行shuffle。 <a name="RepartitionLink"></a></td>
 </tr>
 <tr>
   <td> <b>repartitionAndSortWithinPartitions</b>(<i>partitioner</i>) <a name="Repartition2Link"></a></td>
-  <td> Repartition the RDD according to the given partitioner and, within each resulting partition,
-  sort records by their keys. This is more efficient than calling <code>repartition</code> and then sorting within 
-  each partition because it can push the sorting down into the shuffle machinery. </td>
+  <td> 针对指定的partitioner来重新分配RDD的分区，然后在每个重新分配的分区内将数据按key重新排序。该操作要比直接调用<code>repartition</code>后再在每个分区内进行排序操作要有效率的多，因为它将排序操作下调进了shuffle操作中。
+  </td>
 </tr>
+</table>
 
+<h3 id="actions">Actions</h3>
 
-### Actions
+<p>下表列出了一些Spark里常用的Action。详情请参看RDD API文档
+(<a href="api/scala/index.html#org.apache.spark.rdd.RDD">Scala</a>,
+ <a href="api/java/index.html?org/apache/spark/api/java/JavaRDD.html">Java</a>,
+ <a href="api/python/pyspark.html#pyspark.RDD">Python</a>,
+ <a href="api/R/index.html">R</a>)</p>
 
-The following table lists some of the common actions supported by Spark. Refer to the
-RDD API doc
-([Scala](api/scala/index.html#org.apache.spark.rdd.RDD),
- [Java](api/java/index.html?org/apache/spark/api/java/JavaRDD.html),
- [Python](api/python/pyspark.html#pyspark.RDD),
- [R](api/R/index.html))
- 
-and pair RDD functions doc
-([Scala](api/scala/index.html#org.apache.spark.rdd.PairRDDFunctions),
- [Java](api/java/index.html?org/apache/spark/api/java/JavaPairRDD.html))
-for details.
+<p>以及键值对RDD函数文档
+(<a href="api/scala/index.html#org.apache.spark.rdd.PairRDDFunctions">Scala</a>,
+ <a href="api/java/index.html?org/apache/spark/api/java/JavaPairRDD.html">Java</a>)</p>
 
 <table class="table">
 <tr><th>Action</th><th>Meaning</th></tr>
@@ -1162,92 +1177,94 @@ for details.
 </tr>
 </table>
 
-### Shuffle operations
+<h3 id="shuffle-operations">Shuffle operations</h3>
 
-Certain operations within Spark trigger an event known as the shuffle. The shuffle is Spark's
-mechanism for re-distributing data so that it's grouped differently across partitions. This typically
+<p>Certain operations within Spark trigger an event known as the shuffle. The shuffle is Spark&#8217;s
+mechanism for re-distributing data so that it&#8217;s grouped differently across partitions. This typically
 involves copying data across executors and machines, making the shuffle a complex and
-costly operation.
+costly operation.</p>
 
-#### Background
+<h4 id="background">Background</h4>
 
-To understand what happens during the shuffle we can consider the example of the
-[`reduceByKey`](#ReduceByLink) operation. The `reduceByKey` operation generates a new RDD where all
+<p>To understand what happens during the shuffle we can consider the example of the
+<a href="#ReduceByLink"><code>reduceByKey</code></a> operation. The <code>reduceByKey</code> operation generates a new RDD where all
 values for a single key are combined into a tuple - the key and the result of executing a reduce
 function against all values associated with that key. The challenge is that not all values for a
 single key necessarily reside on the same partition, or even the same machine, but they must be
-co-located to compute the result.
+co-located to compute the result.</p>
 
-In Spark, data is generally not distributed across partitions to be in the necessary place for a
+<p>In Spark, data is generally not distributed across partitions to be in the necessary place for a
 specific operation. During computations, a single task will operate on a single partition - thus, to
-organize all the data for a single `reduceByKey` reduce task to execute, Spark needs to perform an
+organize all the data for a single <code>reduceByKey</code> reduce task to execute, Spark needs to perform an
 all-to-all operation. It must read from all partitions to find all the values for all keys, 
 and then bring together values across partitions to compute the final result for each key - 
-this is called the **shuffle**.
+this is called the <strong>shuffle</strong>.</p>
 
-Although the set of elements in each partition of newly shuffled data will be deterministic, and so
+<p>Although the set of elements in each partition of newly shuffled data will be deterministic, and so
 is the ordering of partitions themselves, the ordering of these elements is not. If one desires predictably 
-ordered data following shuffle then it's possible to use: 
+ordered data following shuffle then it&#8217;s possible to use:</p>
 
-* `mapPartitions` to sort each partition using, for example, `.sorted`
-* `repartitionAndSortWithinPartitions` to efficiently sort partitions while simultaneously repartitioning
-* `sortBy` to make a globally ordered RDD
+<ul>
+  <li><code>mapPartitions</code> to sort each partition using, for example, <code>.sorted</code></li>
+  <li><code>repartitionAndSortWithinPartitions</code> to efficiently sort partitions while simultaneously repartitioning</li>
+  <li><code>sortBy</code> to make a globally ordered RDD</li>
+</ul>
 
-Operations which can cause a shuffle include **repartition** operations like
-[`repartition`](#RepartitionLink) and [`coalesce`](#CoalesceLink), **'ByKey** operations
-(except for counting) like [`groupByKey`](#GroupByLink) and [`reduceByKey`](#ReduceByLink), and
-**join** operations like [`cogroup`](#CogroupLink) and [`join`](#JoinLink).
+<p>Operations which can cause a shuffle include <strong>repartition</strong> operations like
+<a href="#RepartitionLink"><code>repartition</code></a> and <a href="#CoalesceLink"><code>coalesce</code></a>, <strong>&#8216;ByKey</strong> operations
+(except for counting) like <a href="#GroupByLink"><code>groupByKey</code></a> and <a href="#ReduceByLink"><code>reduceByKey</code></a>, and
+<strong>join</strong> operations like <a href="#CogroupLink"><code>cogroup</code></a> and <a href="#JoinLink"><code>join</code></a>.</p>
 
-#### Performance Impact
-The **Shuffle** is an expensive operation since it involves disk I/O, data serialization, and
-network I/O. To organize data for the shuffle, Spark generates sets of tasks - *map* tasks to
-organize the data, and a set of *reduce* tasks to aggregate it. This nomenclature comes from
-MapReduce and does not directly relate to Spark's `map` and `reduce` operations.
+<h4 id="performance-impact">Performance Impact</h4>
+<p>The <strong>Shuffle</strong> is an expensive operation since it involves disk I/O, data serialization, and
+network I/O. To organize data for the shuffle, Spark generates sets of tasks - <em>map</em> tasks to
+organize the data, and a set of <em>reduce</em> tasks to aggregate it. This nomenclature comes from
+MapReduce and does not directly relate to Spark&#8217;s <code>map</code> and <code>reduce</code> operations.</p>
 
-Internally, results from individual map tasks are kept in memory until they can't fit. Then, these 
+<p>Internally, results from individual map tasks are kept in memory until they can&#8217;t fit. Then, these 
 are sorted based on the target partition and written to a single file. On the reduce side, tasks 
-read the relevant sorted blocks.
-        
-Certain shuffle operations can consume significant amounts of heap memory since they employ 
-in-memory data structures to organize records before or after transferring them. Specifically, 
-`reduceByKey` and `aggregateByKey` create these structures on the map side, and `'ByKey` operations 
-generate these on the reduce side. When data does not fit in memory Spark will spill these tables 
-to disk, incurring the additional overhead of disk I/O and increased garbage collection.
+read the relevant sorted blocks.</p>
 
-Shuffle also generates a large number of intermediate files on disk. As of Spark 1.3, these files
+<p>Certain shuffle operations can consume significant amounts of heap memory since they employ 
+in-memory data structures to organize records before or after transferring them. Specifically, 
+<code>reduceByKey</code> and <code>aggregateByKey</code> create these structures on the map side, and <code>'ByKey</code> operations 
+generate these on the reduce side. When data does not fit in memory Spark will spill these tables 
+to disk, incurring the additional overhead of disk I/O and increased garbage collection.</p>
+
+<p>Shuffle also generates a large number of intermediate files on disk. As of Spark 1.3, these files
 are preserved until the corresponding RDDs are no longer used and are garbage collected. 
-This is done so the shuffle files don't need to be re-created if the lineage is re-computed. 
+This is done so the shuffle files don&#8217;t need to be re-created if the lineage is re-computed. 
 Garbage collection may happen only after a long period time, if the application retains references 
 to these RDDs or if GC does not kick in frequently. This means that long-running Spark jobs may 
 consume a large amount of disk space. The temporary storage directory is specified by the
-`spark.local.dir` configuration parameter when configuring the Spark context.
+<code>spark.local.dir</code> configuration parameter when configuring the Spark context.</p>
 
-Shuffle behavior can be tuned by adjusting a variety of configuration parameters. See the
-'Shuffle Behavior' section within the [Spark Configuration Guide](configuration.html). 
+<p>Shuffle behavior can be tuned by adjusting a variety of configuration parameters. See the
+&#8216;Shuffle Behavior&#8217; section within the <a href="configuration.html">Spark Configuration Guide</a>.</p>
 
-## RDD Persistence
+<h2 id="rdd-persistence">RDD Persistence</h2>
 
-One of the most important capabilities in Spark is *persisting* (or *caching*) a dataset in memory
+<p>One of the most important capabilities in Spark is <em>persisting</em> (or <em>caching</em>) a dataset in memory
 across operations. When you persist an RDD, each node stores any partitions of it that it computes in
 memory and reuses them in other actions on that dataset (or datasets derived from it). This allows
 future actions to be much faster (often by more than 10x). Caching is a key tool for
-iterative algorithms and fast interactive use.
+iterative algorithms and fast interactive use.</p>
 
-You can mark an RDD to be persisted using the `persist()` or `cache()` methods on it. The first time
-it is computed in an action, it will be kept in memory on the nodes. Spark's cache is fault-tolerant --
+<p>You can mark an RDD to be persisted using the <code>persist()</code> or <code>cache()</code> methods on it. The first time
+it is computed in an action, it will be kept in memory on the nodes. Spark&#8217;s cache is fault-tolerant &#8211;
 if any partition of an RDD is lost, it will automatically be recomputed using the transformations
-that originally created it.
+that originally created it.</p>
 
-In addition, each persisted RDD can be stored using a different *storage level*, allowing you, for example,
+<p>In addition, each persisted RDD can be stored using a different <em>storage level</em>, allowing you, for example,
 to persist the dataset on disk, persist it in memory but as serialized Java objects (to save space),
-replicate it across nodes, or store it off-heap in [Tachyon](http://tachyon-project.org/).
+replicate it across nodes, or store it off-heap in <a href="http://tachyon-project.org/">Tachyon</a>.
 These levels are set by passing a
-`StorageLevel` object ([Scala](api/scala/index.html#org.apache.spark.storage.StorageLevel),
-[Java](api/java/index.html?org/apache/spark/storage/StorageLevel.html),
-[Python](api/python/pyspark.html#pyspark.StorageLevel))
-to `persist()`. The `cache()` method is a shorthand for using the default storage level,
-which is `StorageLevel.MEMORY_ONLY` (store deserialized objects in memory). The full set of
-storage levels is:
+<code>StorageLevel</code> object (<a href="api/scala/index.html#org.apache.spark.storage.StorageLevel">Scala</a>,
+<a href="api/java/index.html?org/apache/spark/storage/StorageLevel.html">Java</a>,
+<a href="api/python/pyspark.html#pyspark.StorageLevel">Python</a>)
+to <code>persist()</code>. The <code>cache()</code> method is a shorthand for using the default storage level,
+which is <code>StorageLevel.MEMORY_ONLY</code> (store deserialized objects in memory). The full set of
+storage levels is:</p>
 
 <table class="table">
 <tr><th style="width:23%">Storage Level</th><th>Meaning</th></tr>
@@ -1296,127 +1313,137 @@ storage levels is:
 </tr>
 </table>
 
-**Note:** *In Python, stored objects will always be serialized with the [Pickle](https://docs.python.org/2/library/pickle.html) library, so it does not matter whether you choose a serialized level.*
+<p><strong>Note:</strong> <em>In Python, stored objects will always be serialized with the <a href="https://docs.python.org/2/library/pickle.html">Pickle</a> library, so it does not matter whether you choose a serialized level.</em></p>
 
-Spark also automatically persists some intermediate data in shuffle operations (e.g. `reduceByKey`), even without users calling `persist`. This is done to avoid recomputing the entire input if a node fails during the shuffle. We still recommend users call `persist` on the resulting RDD if they plan to reuse it.
+<p>Spark also automatically persists some intermediate data in shuffle operations (e.g. <code>reduceByKey</code>), even without users calling <code>persist</code>. This is done to avoid recomputing the entire input if a node fails during the shuffle. We still recommend users call <code>persist</code> on the resulting RDD if they plan to reuse it.</p>
 
-### Which Storage Level to Choose?
+<h3 id="which-storage-level-to-choose">Which Storage Level to Choose?</h3>
 
-Spark's storage levels are meant to provide different trade-offs between memory usage and CPU
-efficiency. We recommend going through the following process to select one:
+<p>Spark&#8217;s storage levels are meant to provide different trade-offs between memory usage and CPU
+efficiency. We recommend going through the following process to select one:</p>
 
-* If your RDDs fit comfortably with the default storage level (`MEMORY_ONLY`), leave them that way.
-  This is the most CPU-efficient option, allowing operations on the RDDs to run as fast as possible.
-
-* If not, try using `MEMORY_ONLY_SER` and [selecting a fast serialization library](tuning.html) to
-make the objects much more space-efficient, but still reasonably fast to access. 
-
-* Don't spill to disk unless the functions that computed your datasets are expensive, or they filter
+<ul>
+  <li>
+    <p>If your RDDs fit comfortably with the default storage level (<code>MEMORY_ONLY</code>), leave them that way.
+This is the most CPU-efficient option, allowing operations on the RDDs to run as fast as possible.</p>
+  </li>
+  <li>
+    <p>If not, try using <code>MEMORY_ONLY_SER</code> and <a href="tuning.html">selecting a fast serialization library</a> to
+make the objects much more space-efficient, but still reasonably fast to access.</p>
+  </li>
+  <li>
+    <p>Don&#8217;t spill to disk unless the functions that computed your datasets are expensive, or they filter
 a large amount of the data. Otherwise, recomputing a partition may be as fast as reading it from
-disk.
-
-* Use the replicated storage levels if you want fast fault recovery (e.g. if using Spark to serve
-requests from a web application). *All* the storage levels provide full fault tolerance by
+disk.</p>
+  </li>
+  <li>
+    <p>Use the replicated storage levels if you want fast fault recovery (e.g. if using Spark to serve
+requests from a web application). <em>All</em> the storage levels provide full fault tolerance by
 recomputing lost data, but the replicated ones let you continue running tasks on the RDD without
-waiting to recompute a lost partition.
+waiting to recompute a lost partition.</p>
+  </li>
+  <li>
+    <p>In environments with high amounts of memory or multiple applications, the experimental <code>OFF_HEAP</code>
+mode has several advantages:</p>
+    <ul>
+      <li>It allows multiple executors to share the same pool of memory in Tachyon.</li>
+      <li>It significantly reduces garbage collection costs.</li>
+      <li>Cached data is not lost if individual executors crash.</li>
+    </ul>
+  </li>
+</ul>
 
-* In environments with high amounts of memory or multiple applications, the experimental `OFF_HEAP`
-mode has several advantages:
-   * It allows multiple executors to share the same pool of memory in Tachyon.
-   * It significantly reduces garbage collection costs.
-   * Cached data is not lost if individual executors crash.
+<h3 id="removing-data">Removing Data</h3>
 
-### Removing Data
-
-Spark automatically monitors cache usage on each node and drops out old data partitions in a
+<p>Spark automatically monitors cache usage on each node and drops out old data partitions in a
 least-recently-used (LRU) fashion. If you would like to manually remove an RDD instead of waiting for
-it to fall out of the cache, use the `RDD.unpersist()` method.
+it to fall out of the cache, use the <code>RDD.unpersist()</code> method.</p>
 
-# Shared Variables
+<h1 id="shared-variables">Shared Variables</h1>
 
-Normally, when a function passed to a Spark operation (such as `map` or `reduce`) is executed on a
+<p>Normally, when a function passed to a Spark operation (such as <code>map</code> or <code>reduce</code>) is executed on a
 remote cluster node, it works on separate copies of all the variables used in the function. These
 variables are copied to each machine, and no updates to the variables on the remote machine are
 propagated back to the driver program. Supporting general, read-write shared variables across tasks
-would be inefficient. However, Spark does provide two limited types of *shared variables* for two
-common usage patterns: broadcast variables and accumulators.
+would be inefficient. However, Spark does provide two limited types of <em>shared variables</em> for two
+common usage patterns: broadcast variables and accumulators.</p>
 
-## Broadcast Variables
+<h2 id="broadcast-variables">Broadcast Variables</h2>
 
-Broadcast variables allow the programmer to keep a read-only variable cached on each machine rather
+<p>Broadcast variables allow the programmer to keep a read-only variable cached on each machine rather
 than shipping a copy of it with tasks. They can be used, for example, to give every node a copy of a
 large input dataset in an efficient manner. Spark also attempts to distribute broadcast variables
-using efficient broadcast algorithms to reduce communication cost.
+using efficient broadcast algorithms to reduce communication cost.</p>
 
-Spark actions are executed through a set of stages, separated by distributed "shuffle" operations.
+<p>Spark actions are executed through a set of stages, separated by distributed &#8220;shuffle&#8221; operations.
 Spark automatically broadcasts the common data needed by tasks within each stage. The data
 broadcasted this way is cached in serialized form and deserialized before running each task. This
 means that explicitly creating broadcast variables is only useful when tasks across multiple stages
-need the same data or when caching the data in deserialized form is important.
+need the same data or when caching the data in deserialized form is important.</p>
 
-Broadcast variables are created from a variable `v` by calling `SparkContext.broadcast(v)`. The
-broadcast variable is a wrapper around `v`, and its value can be accessed by calling the `value`
-method. The code below shows this:
+<p>Broadcast variables are created from a variable <code>v</code> by calling <code>SparkContext.broadcast(v)</code>. The
+broadcast variable is a wrapper around <code>v</code>, and its value can be accessed by calling the <code>value</code>
+method. The code below shows this:</p>
 
 <div class="codetabs">
 
 <div data-lang="scala">
 
-          <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">broadcastVar</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">broadcast</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">))</span>
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">broadcastVar</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">broadcast</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">))</span>
 <span class="n">broadcastVar</span><span class="k">:</span> <span class="kt">org.apache.spark.broadcast.Broadcast</span><span class="o">[</span><span class="kt">Array</span><span class="o">[</span><span class="kt">Int</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Broadcast</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="n">broadcastVar</span><span class="o">.</span><span class="n">value</span>
 <span class="n">res0</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">)</span></code></pre></div>
 
-        </div>
+  </div>
 
 <div data-lang="java">
 
-          <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">Broadcast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">[]&gt;</span> <span class="n">broadcastVar</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">broadcast</span><span class="o">(</span><span class="k">new</span> <span class="kt">int</span><span class="o">[]</span> <span class="o">{</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">});</span>
+    <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">Broadcast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">[]&gt;</span> <span class="n">broadcastVar</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">broadcast</span><span class="o">(</span><span class="k">new</span> <span class="kt">int</span><span class="o">[]</span> <span class="o">{</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">});</span>
 
 <span class="n">broadcastVar</span><span class="o">.</span><span class="na">value</span><span class="o">();</span>
 <span class="c1">// returns [1, 2, 3]</span></code></pre></div>
 
-        </div>
+  </div>
 
 <div data-lang="python">
 
-          <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">broadcastVar</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">broadcast</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">broadcastVar</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">broadcast</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="o">&lt;</span><span class="n">pyspark</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Broadcast</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x102789f10</span><span class="o">&gt;</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">broadcastVar</span><span class="o">.</span><span class="n">value</span>
 <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span></code></pre></div>
 
-        </div>
+  </div>
 
 </div>
 
-After the broadcast variable is created, it should be used instead of the value `v` in any functions
-run on the cluster so that `v` is not shipped to the nodes more than once. In addition, the object
-`v` should not be modified after it is broadcast in order to ensure that all nodes get the same
-value of the broadcast variable (e.g. if the variable is shipped to a new node later).
+<p>After the broadcast variable is created, it should be used instead of the value <code>v</code> in any functions
+run on the cluster so that <code>v</code> is not shipped to the nodes more than once. In addition, the object
+<code>v</code> should not be modified after it is broadcast in order to ensure that all nodes get the same
+value of the broadcast variable (e.g. if the variable is shipped to a new node later).</p>
 
-## Accumulators <a name="AccumLink"></a>
+<h2 id="accumulators-a-nameaccumlinka">Accumulators <a name="AccumLink"></a></h2>
 
-Accumulators are variables that are only "added" to through an associative operation and can
+<p>Accumulators are variables that are only &#8220;added&#8221; to through an associative operation and can
 therefore be efficiently supported in parallel. They can be used to implement counters (as in
 MapReduce) or sums. Spark natively supports accumulators of numeric types, and programmers
 can add support for new types. If accumulators are created with a name, they will be
-displayed in Spark's UI. This can be useful for understanding the progress of 
-running stages (NOTE: this is not yet supported in Python).
+displayed in Spark&#8217;s UI. This can be useful for understanding the progress of 
+running stages (NOTE: this is not yet supported in Python).</p>
 
-An accumulator is created from an initial value `v` by calling `SparkContext.accumulator(v)`. Tasks
-running on the cluster can then add to it using the `add` method or the `+=` operator (in Scala and Python).
+<p>An accumulator is created from an initial value <code>v</code> by calling <code>SparkContext.accumulator(v)</code>. Tasks
+running on the cluster can then add to it using the <code>add</code> method or the <code>+=</code> operator (in Scala and Python).
 However, they cannot read its value.
-Only the driver program can read the accumulator's value, using its `value` method.
+Only the driver program can read the accumulator&#8217;s value, using its <code>value</code> method.</p>
 
-The code below shows an accumulator being used to add up the elements of an array:
+<p>The code below shows an accumulator being used to add up the elements of an array:</p>
 
 <div class="codetabs">
 
 <div data-lang="scala">
 
-          <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">accum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;My Accumulator&quot;</span><span class="o">)</span>
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">accum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;My Accumulator&quot;</span><span class="o">)</span>
 <span class="n">accum</span><span class="k">:</span> <span class="kt">spark.Accumulator</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="mi">0</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">)).</span><span class="n">foreach</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">accum</span> <span class="o">+=</span> <span class="n">x</span><span class="o">)</span>
@@ -1426,13 +1453,13 @@ The code below shows an accumulator being used to add up the elements of an arra
 <span class="n">scala</span><span class="o">&gt;</span> <span class="n">accum</span><span class="o">.</span><span class="n">value</span>
 <span class="n">res2</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">10</span></code></pre></div>
 
-          <p>While this code used the built-in support for accumulators of type Int, programmers can also
+    <p>While this code used the built-in support for accumulators of type Int, programmers can also
 create their own types by subclassing <a href="api/scala/index.html#org.apache.spark.AccumulatorParam">AccumulatorParam</a>.
 The AccumulatorParam interface has two methods: <code>zero</code> for providing a &#8220;zero value&#8221; for your data
 type, and <code>addInPlace</code> for adding two values together. For example, supposing we had a <code>Vector</code> class
 representing mathematical vectors, we could write:</p>
 
-          <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">object</span> <span class="nc">VectorAccumulatorParam</span> <span class="k">extends</span> <span class="nc">AccumulatorParam</span><span class="o">[</span><span class="kt">Vector</span><span class="o">]</span> <span class="o">{</span>
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">object</span> <span class="nc">VectorAccumulatorParam</span> <span class="k">extends</span> <span class="nc">AccumulatorParam</span><span class="o">[</span><span class="kt">Vector</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">zero</span><span class="o">(</span><span class="n">initialValue</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">)</span><span class="k">:</span> <span class="kt">Vector</span> <span class="o">=</span> <span class="o">{</span>
     <span class="nc">Vector</span><span class="o">.</span><span class="n">zeros</span><span class="o">(</span><span class="n">initialValue</span><span class="o">.</span><span class="n">size</span><span class="o">)</span>
   <span class="o">}</span>
@@ -1444,16 +1471,16 @@ representing mathematical vectors, we could write:</p>
 <span class="c1">// Then, create an Accumulator of this type:</span>
 <span class="k">val</span> <span class="n">vecAccum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="k">new</span> <span class="nc">Vector</span><span class="o">(...))(</span><span class="nc">VectorAccumulatorParam</span><span class="o">)</span></code></pre></div>
 
-          <p>In Scala, Spark also supports the more general <a href="api/scala/index.html#org.apache.spark.Accumulable">Accumulable</a>
+    <p>In Scala, Spark also supports the more general <a href="api/scala/index.html#org.apache.spark.Accumulable">Accumulable</a>
 interface to accumulate data where the resulting type is not the same as the elements added (e.g. build
 a list by collecting together elements), and the <code>SparkContext.accumulableCollection</code> method for accumulating
 common Scala collection types.</p>
 
-        </div>
+  </div>
 
 <div data-lang="java">
 
-          <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">Accumulator</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">accum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+    <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">Accumulator</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">accum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
 
 <span class="n">sc</span><span class="o">.</span><span class="na">parallelize</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">)).</span><span class="na">foreach</span><span class="o">(</span><span class="n">x</span> <span class="o">-&gt;</span> <span class="n">accum</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">x</span><span class="o">));</span>
 <span class="c1">// ...</span>
@@ -1462,13 +1489,13 @@ common Scala collection types.</p>
 <span class="n">accum</span><span class="o">.</span><span class="na">value</span><span class="o">();</span>
 <span class="c1">// returns 10</span></code></pre></div>
 
-          <p>While this code used the built-in support for accumulators of type Integer, programmers can also
+    <p>While this code used the built-in support for accumulators of type Integer, programmers can also
 create their own types by subclassing <a href="api/java/index.html?org/apache/spark/AccumulatorParam.html">AccumulatorParam</a>.
 The AccumulatorParam interface has two methods: <code>zero</code> for providing a &#8220;zero value&#8221; for your data
 type, and <code>addInPlace</code> for adding two values together. For example, supposing we had a <code>Vector</code> class
 representing mathematical vectors, we could write:</p>
 
-          <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">VectorAccumulatorParam</span> <span class="kd">implements</span> <span class="n">AccumulatorParam</span><span class="o">&lt;</span><span class="n">Vector</span><span class="o">&gt;</span> <span class="o">{</span>
+    <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">VectorAccumulatorParam</span> <span class="kd">implements</span> <span class="n">AccumulatorParam</span><span class="o">&lt;</span><span class="n">Vector</span><span class="o">&gt;</span> <span class="o">{</span>
   <span class="kd">public</span> <span class="n">Vector</span> <span class="nf">zero</span><span class="o">(</span><span class="n">Vector</span> <span class="n">initialValue</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">return</span> <span class="n">Vector</span><span class="o">.</span><span class="na">zeros</span><span class="o">(</span><span class="n">initialValue</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
   <span class="o">}</span>
@@ -1480,15 +1507,15 @@ representing mathematical vectors, we could write:</p>
 <span class="c1">// Then, create an Accumulator of this type:</span>
 <span class="n">Accumulator</span><span class="o">&lt;</span><span class="n">Vector</span><span class="o">&gt;</span> <span class="n">vecAccum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">accumulator</span><span class="o">(</span><span class="k">new</span> <span class="nf">Vector</span><span class="o">(...),</span> <span class="k">new</span> <span class="nf">VectorAccumulatorParam</span><span class="o">());</span></code></pre></div>
 
-          <p>In Java, Spark also supports the more general <a href="api/java/index.html?org/apache/spark/Accumulable.html">Accumulable</a>
+    <p>In Java, Spark also supports the more general <a href="api/java/index.html?org/apache/spark/Accumulable.html">Accumulable</a>
 interface to accumulate data where the resulting type is not the same as the elements added (e.g. build
 a list by collecting together elements).</p>
 
-        </div>
+  </div>
 
 <div data-lang="python">
 
-          <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">accum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">accum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">Accumulator</span><span class="o">&lt;</span><span class="nb">id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="o">&gt;</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">foreach</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">accum</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
@@ -1498,13 +1525,13 @@ a list by collecting together elements).</p>
 <span class="n">scala</span><span class="o">&gt;</span> <span class="n">accum</span><span class="o">.</span><span class="n">value</span>
 <span class="mi">10</span></code></pre></div>
 
-          <p>While this code used the built-in support for accumulators of type Int, programmers can also
+    <p>While this code used the built-in support for accumulators of type Int, programmers can also
 create their own types by subclassing <a href="api/python/pyspark.html#pyspark.AccumulatorParam">AccumulatorParam</a>.
 The AccumulatorParam interface has two methods: <code>zero</code> for providing a &#8220;zero value&#8221; for your data
 type, and <code>addInPlace</code> for adding two values together. For example, supposing we had a <code>Vector</code> class
 representing mathematical vectors, we could write:</p>
 
-          <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">VectorAccumulatorParam</span><span class="p">(</span><span class="n">AccumulatorParam</span><span class="p">):</span>
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">VectorAccumulatorParam</span><span class="p">(</span><span class="n">AccumulatorParam</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">zero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initialValue</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Vector</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">initialValue</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 
@@ -1515,140 +1542,141 @@ representing mathematical vectors, we could write:</p>
 <span class="c"># Then, create an Accumulator of this type:</span>
 <span class="n">vecAccum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="p">(</span><span class="n">Vector</span><span class="p">(</span><span class="o">...</span><span class="p">),</span> <span class="n">VectorAccumulatorParam</span><span class="p">())</span></code></pre></div>
 
-        </div>
+  </div>
 
 </div>
 
-For accumulator updates performed inside <b>actions only</b>, Spark guarantees that each task's update to the accumulator 
+<p>For accumulator updates performed inside <b>actions only</b>, Spark guarantees that each task&#8217;s update to the accumulator 
 will only be applied once, i.e. restarted tasks will not update the value. In transformations, users should be aware 
-of that each task's update may be applied more than once if tasks or job stages are re-executed.
+of that each task&#8217;s update may be applied more than once if tasks or job stages are re-executed.</p>
 
-Accumulators do not change the lazy evaluation model of Spark. If they are being updated within an operation on an RDD, their value is only updated once that RDD is computed as part of an action. Consequently, accumulator updates are not guaranteed to be executed when made within a lazy transformation like `map()`. The below code fragment demonstrates this property:
+<p>Accumulators do not change the lazy evaluation model of Spark. If they are being updated within an operation on an RDD, their value is only updated once that RDD is computed as part of an action. Consequently, accumulator updates are not guaranteed to be executed when made within a lazy transformation like <code>map()</code>. The below code fragment demonstrates this property:</p>
 
 <div class="codetabs">
 
 <div data-lang="scala">
 
-          <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">accum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">accum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
 <span class="n">data</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">x</span> <span class="k">=&gt;</span> <span class="n">accum</span> <span class="o">+=</span> <span class="n">x</span><span class="o">;</span> <span class="n">f</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="o">}</span>
 <span class="c1">// Here, accum is still 0 because no actions have caused the `map` to be computed.</span></code></pre></div>
 
-        </div>
+  </div>
 
 <div data-lang="java">
 
-          <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">Accumulator</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">accum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+    <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">Accumulator</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">accum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
 <span class="n">data</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">x</span> <span class="o">-&gt;</span> <span class="o">{</span> <span class="n">accum</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">x</span><span class="o">);</span> <span class="k">return</span> <span class="nf">f</span><span class="o">(</span><span class="n">x</span><span class="o">);</span> <span class="o">});</span>
 <span class="c1">// Here, accum is still 0 because no actions have caused the `map` to be computed.</span></code></pre></div>
 
-        </div>
+  </div>
 
 <div data-lang="python">
 
-          <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">accum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">accum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
   <span class="n">accum</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="n">data</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 <span class="c"># Here, accum is still 0 because no actions have caused the `map` to be computed.</span></code></pre></div>
 
-        </div>
+  </div>
 
 </div>
 
-# Deploying to a Cluster
+<h1 id="deploying-to-a-cluster">Deploying to a Cluster</h1>
 
-The [application submission guide](submitting-applications.html) describes how to submit applications to a cluster.
-In short, once you package your application into a JAR (for Java/Scala) or a set of `.py` or `.zip` files (for Python),
-the `bin/spark-submit` script lets you submit it to any supported cluster manager.
+<p>The <a href="submitting-applications.html">application submission guide</a> describes how to submit applications to a cluster.
+In short, once you package your application into a JAR (for Java/Scala) or a set of <code>.py</code> or <code>.zip</code> files (for Python),
+the <code>bin/spark-submit</code> script lets you submit it to any supported cluster manager.</p>
 
-# Launching Spark jobs from Java / Scala
+<h1 id="launching-spark-jobs-from-java--scala">Launching Spark jobs from Java / Scala</h1>
 
-The [org.apache.spark.launcher](api/java/index.html?org/apache/spark/launcher/package-summary.html)
-package provides classes for launching Spark jobs as child processes using a simple Java API.
+<p>The <a href="api/java/index.html?org/apache/spark/launcher/package-summary.html">org.apache.spark.launcher</a>
+package provides classes for launching Spark jobs as child processes using a simple Java API.</p>
 
-# Unit Testing
+<h1 id="unit-testing">Unit Testing</h1>
 
-Spark is friendly to unit testing with any popular unit test framework.
-Simply create a `SparkContext` in your test with the master URL set to `local`, run your operations,
-and then call `SparkContext.stop()` to tear it down.
-Make sure you stop the context within a `finally` block or the test framework's `tearDown` method,
-as Spark does not support two contexts running concurrently in the same program.
+<p>Spark is friendly to unit testing with any popular unit test framework.
+Simply create a <code>SparkContext</code> in your test with the master URL set to <code>local</code>, run your operations,
+and then call <code>SparkContext.stop()</code> to tear it down.
+Make sure you stop the context within a <code>finally</code> block or the test framework&#8217;s <code>tearDown</code> method,
+as Spark does not support two contexts running concurrently in the same program.</p>
 
-# Migrating from pre-1.0 Versions of Spark
+<h1 id="migrating-from-pre-10-versions-of-spark">Migrating from pre-1.0 Versions of Spark</h1>
 
 <div class="codetabs">
 
 <div data-lang="scala">
 
-          <p>Spark 1.0 freezes the API of Spark Core for the 1.X series, in that any API available today that is
+    <p>Spark 1.0 freezes the API of Spark Core for the 1.X series, in that any API available today that is
 not marked &#8220;experimental&#8221; or &#8220;developer API&#8221; will be supported in future versions.
 The only change for Scala users is that the grouping operations, e.g. <code>groupByKey</code>, <code>cogroup</code> and <code>join</code>,
 have changed from returning <code>(Key, Seq[Value])</code> pairs to <code>(Key, Iterable[Value])</code>.</p>
 
-        </div>
+  </div>
 
 <div data-lang="java">
 
-          <p>Spark 1.0 freezes the API of Spark Core for the 1.X series, in that any API available today that is
+    <p>Spark 1.0 freezes the API of Spark Core for the 1.X series, in that any API available today that is
 not marked &#8220;experimental&#8221; or &#8220;developer API&#8221; will be supported in future versions.
 Several changes were made to the Java API:</p>
 
-          <ul>
-            <li>The Function classes in <code>org.apache.spark.api.java.function</code> became interfaces in 1.0, meaning that old
+    <ul>
+      <li>The Function classes in <code>org.apache.spark.api.java.function</code> became interfaces in 1.0, meaning that old
 code that <code>extends Function</code> should <code>implement Function</code> instead.</li>
-            <li>New variants of the <code>map</code> transformations, like <code>mapToPair</code> and <code>mapToDouble</code>, were added to create RDDs
+      <li>New variants of the <code>map</code> transformations, like <code>mapToPair</code> and <code>mapToDouble</code>, were added to create RDDs
 of special data types.</li>
-            <li>Grouping operations like <code>groupByKey</code>, <code>cogroup</code> and <code>join</code> have changed from returning 
+      <li>Grouping operations like <code>groupByKey</code>, <code>cogroup</code> and <code>join</code> have changed from returning 
 <code>(Key, List&lt;Value&gt;)</code> pairs to <code>(Key, Iterable&lt;Value&gt;)</code>.</li>
-          </ul>
+    </ul>
 
-        </div>
+  </div>
 
 <div data-lang="python">
 
-          <p>Spark 1.0 freezes the API of Spark Core for the 1.X series, in that any API available today that is
+    <p>Spark 1.0 freezes the API of Spark Core for the 1.X series, in that any API available today that is
 not marked &#8220;experimental&#8221; or &#8220;developer API&#8221; will be supported in future versions.
 The only change for Python users is that the grouping operations, e.g. <code>groupByKey</code>, <code>cogroup</code> and <code>join</code>,
 have changed from returning (key, list of values) pairs to (key, iterable of values).</p>
 
-        </div>
+  </div>
 
 </div>
 
-Migration guides are also available for [Spark Streaming](streaming-programming-guide.html#migration-guide-from-091-or-below-to-1x),
-[MLlib](mllib-guide.html#migration-guide) and [GraphX](graphx-programming-guide.html#migrating-from-spark-091).
+<p>Migration guides are also available for <a href="streaming-programming-guide.html#migration-guide-from-091-or-below-to-1x">Spark Streaming</a>,
+<a href="mllib-guide.html#migration-guide">MLlib</a> and <a href="graphx-programming-guide.html#migrating-from-spark-091">GraphX</a>.</p>
 
+<h1 id="where-to-go-from-here">Where to Go from Here</h1>
 
-# Where to Go from Here
+<p>You can see some <a href="http://spark.apache.org/examples.html">example Spark programs</a> on the Spark website.
+In addition, Spark includes several samples in the <code>examples</code> directory
+(<a href="https://github.com/apache/spark/tree/master/examples/src/main/scala/org/apache/spark/examples">Scala</a>,
+ <a href="https://github.com/apache/spark/tree/master/examples/src/main/java/org/apache/spark/examples">Java</a>,
+ <a href="https://github.com/apache/spark/tree/master/examples/src/main/python">Python</a>,
+ <a href="https://github.com/apache/spark/tree/master/examples/src/main/r">R</a>).
+You can run Java and Scala examples by passing the class name to Spark&#8217;s <code>bin/run-example</code> script; for instance:</p>
 
-You can see some [example Spark programs](http://spark.apache.org/examples.html) on the Spark website.
-In addition, Spark includes several samples in the `examples` directory
-([Scala](https://github.com/apache/spark/tree/master/examples/src/main/scala/org/apache/spark/examples),
- [Java](https://github.com/apache/spark/tree/master/examples/src/main/java/org/apache/spark/examples),
- [Python](https://github.com/apache/spark/tree/master/examples/src/main/python),
- [R](https://github.com/apache/spark/tree/master/examples/src/main/r)).
-You can run Java and Scala examples by passing the class name to Spark's `bin/run-example` script; for instance:
+<pre><code>./bin/run-example SparkPi
+</code></pre>
 
-    ./bin/run-example SparkPi
+<p>For Python examples, use <code>spark-submit</code> instead:</p>
 
-For Python examples, use `spark-submit` instead:
+<pre><code>./bin/spark-submit examples/src/main/python/pi.py
+</code></pre>
 
-    ./bin/spark-submit examples/src/main/python/pi.py
+<p>For R examples, use <code>spark-submit</code> instead:</p>
 
-For R examples, use `spark-submit` instead:
+<pre><code>./bin/spark-submit examples/src/main/r/dataframe.R
+</code></pre>
 
-    ./bin/spark-submit examples/src/main/r/dataframe.R
-
-For help on optimizing your programs, the [configuration](configuration.html) and
-[tuning](tuning.html) guides provide information on best practices. They are especially important for
+<p>For help on optimizing your programs, the <a href="configuration.html">configuration</a> and
+<a href="tuning.html">tuning</a> guides provide information on best practices. They are especially important for
 making sure that your data is stored in memory in an efficient format.
-For help on deploying, the [cluster mode overview](cluster-overview.html) describes the components involved
-in distributed operation and supported cluster managers.
+For help on deploying, the <a href="cluster-overview.html">cluster mode overview</a> describes the components involved
+in distributed operation and supported cluster managers.</p>
 
-Finally, full API documentation is available in
-[Scala](api/scala/#org.apache.spark.package), [Java](api/java/), [Python](api/python/) and [R](api/R/).
-</td></tr></table>
+<p>Finally, full API documentation is available in
+<a href="api/scala/#org.apache.spark.package">Scala</a>, <a href="api/java/">Java</a>, <a href="api/python/">Python</a> and <a href="api/R/">R</a>.</p>
 
 
         </div> <!-- /container -->
