@@ -136,30 +136,30 @@
           <li><a href="#key-value" id="markdown-toc-key-value">使用key-value键值对</a></li>
           <li><a href="#transformation" id="markdown-toc-transformation">转换(Transformation)</a></li>
           <li><a href="#actions" id="markdown-toc-actions">Actions</a></li>
-          <li><a href="#shuffle-operations" id="markdown-toc-shuffle-operations">Shuffle operations</a>            <ul>
-              <li><a href="#background" id="markdown-toc-background">Background</a></li>
-              <li><a href="#performance-impact" id="markdown-toc-performance-impact">Performance Impact</a></li>
+          <li><a href="#shuffle" id="markdown-toc-shuffle">Shuffle操作</a>            <ul>
+              <li><a href="#section-5" id="markdown-toc-section-5">背景</a></li>
+              <li><a href="#section-6" id="markdown-toc-section-6">性能影响</a></li>
             </ul>
           </li>
         </ul>
       </li>
-      <li><a href="#rdd-persistence" id="markdown-toc-rdd-persistence">RDD Persistence</a>        <ul>
-          <li><a href="#which-storage-level-to-choose" id="markdown-toc-which-storage-level-to-choose">Which Storage Level to Choose?</a></li>
-          <li><a href="#removing-data" id="markdown-toc-removing-data">Removing Data</a></li>
+      <li><a href="#rdd-2" id="markdown-toc-rdd-2">RDD持久化</a>        <ul>
+          <li><a href="#section-7" id="markdown-toc-section-7">存储级别的选择</a></li>
+          <li><a href="#section-8" id="markdown-toc-section-8">数据移除</a></li>
         </ul>
       </li>
     </ul>
   </li>
-  <li><a href="#shared-variables" id="markdown-toc-shared-variables">Shared Variables</a>    <ul>
-      <li><a href="#broadcast-variables" id="markdown-toc-broadcast-variables">Broadcast Variables</a></li>
-      <li><a href="#accumulators-a-nameaccumlinka" id="markdown-toc-accumulators-a-nameaccumlinka">Accumulators <a name="AccumLink"></a></a></li>
+  <li><a href="#section-9" id="markdown-toc-section-9">共享变量</a>    <ul>
+      <li><a href="#broadcast-variable" id="markdown-toc-broadcast-variable">广播变量(broadcast variable)</a></li>
+      <li><a href="#accumulator-a-nameaccumlinka" id="markdown-toc-accumulator-a-nameaccumlinka">累加器(Accumulator) <a name="AccumLink"></a></a></li>
     </ul>
   </li>
-  <li><a href="#deploying-to-a-cluster" id="markdown-toc-deploying-to-a-cluster">Deploying to a Cluster</a></li>
-  <li><a href="#launching-spark-jobs-from-java--scala" id="markdown-toc-launching-spark-jobs-from-java--scala">Launching Spark jobs from Java / Scala</a></li>
-  <li><a href="#unit-testing" id="markdown-toc-unit-testing">Unit Testing</a></li>
-  <li><a href="#migrating-from-pre-10-versions-of-spark" id="markdown-toc-migrating-from-pre-10-versions-of-spark">Migrating from pre-1.0 Versions of Spark</a></li>
-  <li><a href="#where-to-go-from-here" id="markdown-toc-where-to-go-from-here">Where to Go from Here</a></li>
+  <li><a href="#section-10" id="markdown-toc-section-10">发布到集群中</a></li>
+  <li><a href="#javascalasparkjob" id="markdown-toc-javascalasparkjob">从Java/Scala中启动Spark作业(job)</a></li>
+  <li><a href="#section-11" id="markdown-toc-section-11">单元测试</a></li>
+  <li><a href="#section-12" id="markdown-toc-section-12">从1.0以前的版本升级</a></li>
+  <li><a href="#section-13" id="markdown-toc-section-13">更多资料</a></li>
 </ul>
 
 <h1 id="section">概览</h1>
@@ -1126,264 +1126,176 @@ Documentation</a>。</p>
 <tr><th>Action</th><th>Meaning</th></tr>
 <tr>
   <td> <b>reduce</b>(<i>func</i>) </td>
-  <td> Aggregate the elements of the dataset using a function <i>func</i> (which takes two arguments and returns one). The function should be commutative and associative so that it can be computed correctly in parallel. </td>
+  <td> 通过函数func(接受两个参数，返回一个结果)对数据集中的所有元素进行聚合。这个功能必须可交换(commutative)且可关联(associative)的，从而可以正确的被并行执行。</td>
 </tr>
 <tr>
   <td> <b>collect</b>() </td>
-  <td> Return all the elements of the dataset as an array at the driver program. This is usually useful after a filter or other operation that returns a sufficiently small subset of the data. </td>
+  <td> 在驱动程序中，以数组的形式，返回数据集的所有元素。这通常会在使用filter或者其它操作并返回一个足够小的数据子集后再使用会比较有用。</td>
 </tr>
 <tr>
   <td> <b>count</b>() </td>
-  <td> Return the number of elements in the dataset. </td>
+  <td> 	返回数据集的元素的个数。 </td>
 </tr>
 <tr>
   <td> <b>first</b>() </td>
-  <td> Return the first element of the dataset (similar to take(1)). </td>
+  <td> 	返回数据集的第一个元素(类似于take(1))。 </td>
 </tr>
 <tr>
   <td> <b>take</b>(<i>n</i>) </td>
-  <td> Return an array with the first <i>n</i> elements of the dataset. </td>
+  <td> 	返回一个由数据集的前<i>n</i>个元素组成的数组。 </td>
 </tr>
 <tr>
   <td> <b>takeSample</b>(<i>withReplacement</i>, <i>num</i>, [<i>seed</i>]) </td>
-  <td> Return an array with a random sample of <i>num</i> elements of the dataset, with or without replacement, optionally pre-specifying a random number generator seed.</td>
+  <td> 返回一个数组，在数据集中随机采样<i>num</i>个元素组成，可以选择是否用随机数替换不足的部分，seed用于指定的随机数生成器种子。</td>
 </tr>
 <tr>
   <td> <b>takeOrdered</b>(<i>n</i>, <i>[ordering]</i>) </td>
-  <td> Return the first <i>n</i> elements of the RDD using either their natural order or a custom comparator. </td>
+  <td> 返回数据集前<i>n</i>个元素，可以选择是使用其自然的顺序或指定一个自定义comparator来排序。</td>
 </tr>
 <tr>
   <td> <b>saveAsTextFile</b>(<i>path</i>) </td>
-  <td> Write the elements of the dataset as a text file (or set of text files) in a given directory in the local filesystem, HDFS or any other Hadoop-supported file system. Spark will call toString on each element to convert it to a line of text in the file. </td>
+  <td> 将数据集的元素，以文本文件的形式，保存到本地文件系统目录，HDFS或者任何其它hadoop支持的文件系统。对于每个元素，Spark将会调用toString方法，将它转换为文件中的文本行。 </td>
 </tr>
 <tr>
   <td> <b>saveAsSequenceFile</b>(<i>path</i>) <br /> (Java and Scala) </td>
-  <td> Write the elements of the dataset as a Hadoop SequenceFile in a given path in the local filesystem, HDFS or any other Hadoop-supported file system. This is available on RDDs of key-value pairs that implement Hadoop's Writable interface. In Scala, it is also
-   available on types that are implicitly convertible to Writable (Spark includes conversions for basic types like Int, Double, String, etc). </td>
+  <td> 将数据集的元素，以Hadoop sequencefile的格式，保存到本地系统指定的目录，HDFS或者任何其它hadoop支持的文件系统。这个只限于由key-value对组成，并实现了Hadoop的Writable接口的RDD。在Scala中，还可以是可以隐式转换为Writable的RDD。（Spark包括了基本类型的转换，例如Int，Double，String，等等）。 </td>
 </tr>
 <tr>
   <td> <b>saveAsObjectFile</b>(<i>path</i>) <br /> (Java and Scala) </td>
-  <td> Write the elements of the dataset in a simple format using Java serialization, which can then be loaded using
-    <code>SparkContext.objectFile()</code>. </td>
+  <td> 使用Java序列化将数据集里的元素进行保存，之后可以使用<code>SparkContex.objectFile()</code>反序列化为原数据集。 </td>
 </tr>
 <tr>
   <td> <b>countByKey</b>() <a name="CountByLink"></a> </td>
-  <td> Only available on RDDs of type (K, V). Returns a hashmap of (K, Int) pairs with the count of each key. </td>
+  <td> 仅可以使用在(K, V)类型的RDD上。返回一个根据key来将V进行累加的(K, Int)hashmap。 </td>
 </tr>
 <tr>
   <td> <b>foreach</b>(<i>func</i>) </td>
-  <td> Run a function <i>func</i> on each element of the dataset. This is usually done for side effects such as updating an <a href="#AccumLink">Accumulator</a> or interacting with external storage systems. 
-  <br /><b>Note</b>: modifying variables other than Accumulators outside of the <code>foreach()</code> may result in undefined behavior. See <a href="#ClosuresLink">Understanding closures </a> for more details.</td>
+  <td> 对数据集的每个元素运行函数<i>func</i>。一般会针对某些操作带来副作用，如更新一个<a href="#AccumLink">Accumulator</a>，或与外部存储系统的交互。<br />
+  <b>注意：</b>更新除Accumulator以外并且在foreach()函数作用域外的变量可能导致一些无法预料的行为。详情请参看<a href="#ClosuresLink">理解闭包</a>。</td>
 </tr>
 </table>
 
-<h3 id="shuffle-operations">Shuffle operations</h3>
+<h3 id="shuffle">Shuffle操作</h3>
 
-<p>Certain operations within Spark trigger an event known as the shuffle. The shuffle is Spark&#8217;s
-mechanism for re-distributing data so that it&#8217;s grouped differently across partitions. This typically
-involves copying data across executors and machines, making the shuffle a complex and
-costly operation.</p>
+<p>Spark中某些特定操作会处罚一个事件，这个事件被称作shuffle。suffle是spark中的重新分配数据的一种机制，这样可以使数据在分区上被分为不同的组。这种机制比较典型的包括在执行器(executor)和机器之间拷贝数据，从而使得shuffle变为一个复杂且成本较高的操作。</p>
 
-<h4 id="background">Background</h4>
+<h4 id="section-5">背景</h4>
 
-<p>To understand what happens during the shuffle we can consider the example of the
-<a href="#ReduceByLink"><code>reduceByKey</code></a> operation. The <code>reduceByKey</code> operation generates a new RDD where all
-values for a single key are combined into a tuple - the key and the result of executing a reduce
-function against all values associated with that key. The challenge is that not all values for a
-single key necessarily reside on the same partition, or even the same machine, but they must be
-co-located to compute the result.</p>
+<p>为了理解shuffle过程，让我们来以<a href="#ReduceByLink"><code>reduceByKey</code></a>操作为例来进行考虑。 <code>reduceByKey</code>操作会产生一个新的RDD，其会根据key来将vlue值进行聚合，然后生成新的tuple - 原key作为新key以及针对关联到这个key上的value值执行reduce函数后的结果作为新的value。其挑战在于某个key所关联的所有value值并不一定位于同一个分区上，甚至不在同一个机器上，但是它们必须要重定位到相同位置上以进行计算。</p>
 
-<p>In Spark, data is generally not distributed across partitions to be in the necessary place for a
-specific operation. During computations, a single task will operate on a single partition - thus, to
-organize all the data for a single <code>reduceByKey</code> reduce task to execute, Spark needs to perform an
-all-to-all operation. It must read from all partitions to find all the values for all keys, 
-and then bring together values across partitions to compute the final result for each key - 
-this is called the <strong>shuffle</strong>.</p>
+<p>在Spark中，在进行一个固定操作时，数据一般会在固定的地方，而不是分布在不同的分区中。在计算过程中，单个任务会在单独的分区中执行 - 因此，为了组织所有数据来执行一个单独的&#8217;reduceByKey&#8217;的reduce任务，Spark需要去执行一个all-to-all操作。它必须从所有分区中读取并找到所有key值以及针对的所有value值，然后将所有分区上的针对每一个key的所有value值聚集在一起来计算出最终结果 - 这就被称为<strong>shuffle</strong>操作。</p>
 
-<p>Although the set of elements in each partition of newly shuffled data will be deterministic, and so
-is the ordering of partitions themselves, the ordering of these elements is not. If one desires predictably 
-ordered data following shuffle then it&#8217;s possible to use:</p>
+<p>虽然在每个分区上新shuffle后的数据集元素是确定的，以及分区顺序也是确定的，可这些元素的顺序确不能确定的。如果需要在shuffle中可预测数据顺序，可能需要使用：</p>
 
 <ul>
-  <li><code>mapPartitions</code> to sort each partition using, for example, <code>.sorted</code></li>
-  <li><code>repartitionAndSortWithinPartitions</code> to efficiently sort partitions while simultaneously repartitioning</li>
-  <li><code>sortBy</code> to make a globally ordered RDD</li>
+  <li><code>mapPartitions</code>来将每个使用的分区进行排序，例如，<code>.sorted</code></li>
+  <li><code>repartitionAndSortWithinPartitions</code>来高效的在重新分区(repartitioning)的同时高效的对分区进行排序。</li>
+  <li><code>sortBy</code>来产生一个全局排序的RDD。</li>
 </ul>
 
-<p>Operations which can cause a shuffle include <strong>repartition</strong> operations like
-<a href="#RepartitionLink"><code>repartition</code></a> and <a href="#CoalesceLink"><code>coalesce</code></a>, <strong>&#8216;ByKey</strong> operations
-(except for counting) like <a href="#GroupByLink"><code>groupByKey</code></a> and <a href="#ReduceByLink"><code>reduceByKey</code></a>, and
-<strong>join</strong> operations like <a href="#CogroupLink"><code>cogroup</code></a> and <a href="#JoinLink"><code>join</code></a>.</p>
+<p>可能会导致shuffle的操作包括<strong>重分区(repartition)</strong>操作，比如<a href="#RepartitionLink"><code>repartition</code></a>和<a href="#CoalesceLink"><code>coalesce</code></a>；<strong>&#8216;ByKey</strong>操作(除counting操作外)，比如<a href="#GroupByLink"><code>groupByKey</code></a>和<a href="#ReduceByLink"><code>reduceByKey</code></a>；以及<strong>join</strong>操作，比如<a href="#CogroupLink"><code>cogroup</code></a>以及<a href="#JoinLink"><code>join</code></a>。</p>
 
-<h4 id="performance-impact">Performance Impact</h4>
-<p>The <strong>Shuffle</strong> is an expensive operation since it involves disk I/O, data serialization, and
-network I/O. To organize data for the shuffle, Spark generates sets of tasks - <em>map</em> tasks to
-organize the data, and a set of <em>reduce</em> tasks to aggregate it. This nomenclature comes from
-MapReduce and does not directly relate to Spark&#8217;s <code>map</code> and <code>reduce</code> operations.</p>
+<h4 id="section-6">性能影响</h4>
+<p><strong>shuffle</strong>是一种昂贵的操作，因为它包含了磁盘I/O，数据序列化以及网络I/O。为了为shuffle组织数据，Spark会生成任务集合 - 一组<em>map</em>任务集合来组织数据，以及一组<em>reduce</em>任务来聚合数据。这个属于来自于MapReduce而且与Spark中的<code>map</code>和<code>reduce</code>操作并不是相关联的。</p>
 
-<p>Internally, results from individual map tasks are kept in memory until they can&#8217;t fit. Then, these 
-are sorted based on the target partition and written to a single file. On the reduce side, tasks 
-read the relevant sorted blocks.</p>
+<p>在内部，单独的map任务所产生的结果会被保存在内存中，直到内存无法保存为止。然后，它们会基于目标分区进行排序并被写入到一个单独的文件中。在reduce操作中，任务会读取相关的有序快。</p>
 
-<p>Certain shuffle operations can consume significant amounts of heap memory since they employ 
-in-memory data structures to organize records before or after transferring them. Specifically, 
-<code>reduceByKey</code> and <code>aggregateByKey</code> create these structures on the map side, and <code>'ByKey</code> operations 
-generate these on the reduce side. When data does not fit in memory Spark will spill these tables 
-to disk, incurring the additional overhead of disk I/O and increased garbage collection.</p>
+<p>特定的shuffle操作会消耗掉大量的堆内存，因为它们传输数据之前或之后，会使用了内存数据结构来组织数据。特别的，<code>reduceByKey</code>以及<code>aggregateByKey</code>会在map操作时构建这些数据结构，然后<code>'ByKey</code>操作会在reduce操作时真正产生这些结构。当数据不再适合放在内存时，Spark将会将这些表&#8221;溢出&#8221;到磁盘上，并伴随着更多额外的磁盘I/O以及更多的垃圾回收。</p>
 
-<p>Shuffle also generates a large number of intermediate files on disk. As of Spark 1.3, these files
-are preserved until the corresponding RDDs are no longer used and are garbage collected. 
-This is done so the shuffle files don&#8217;t need to be re-created if the lineage is re-computed. 
-Garbage collection may happen only after a long period time, if the application retains references 
-to these RDDs or if GC does not kick in frequently. This means that long-running Spark jobs may 
-consume a large amount of disk space. The temporary storage directory is specified by the
-<code>spark.local.dir</code> configuration parameter when configuring the Spark context.</p>
+<p>shuffle同样还会在磁盘上产生很多的中间文件。在Spark 1.3中，这些文件会被一直保存直到相应的RDD不再被使用并被垃圾回收。这样的话，如果需要重新计算，这些shuffle文件就没有必要被重新创建。如果应用程序一直保留了对这些RDD的引用，或者垃圾回收没有很频繁的清理的话，垃圾回收可能仅仅在很长一段时间后会发生。这意味着长时间运行的Spark任务会消耗很大一块内存空间。临时存储目录可以在配置Spark context时通过<code>spark.local.dir</code>配置参数来指定。</p>
 
-<p>Shuffle behavior can be tuned by adjusting a variety of configuration parameters. See the
-&#8216;Shuffle Behavior&#8217; section within the <a href="configuration.html">Spark Configuration Guide</a>.</p>
+<p>shuffle行为可以通过调整一些列配置参数来进行优化。请参看<a href="configuration.html">Spark Configuration Guide</a>内的&#8217;Shuffle行为&#8217;一节。</p>
 
-<h2 id="rdd-persistence">RDD Persistence</h2>
+<h2 id="rdd-2">RDD持久化</h2>
 
-<p>One of the most important capabilities in Spark is <em>persisting</em> (or <em>caching</em>) a dataset in memory
-across operations. When you persist an RDD, each node stores any partitions of it that it computes in
-memory and reuses them in other actions on that dataset (or datasets derived from it). This allows
-future actions to be much faster (often by more than 10x). Caching is a key tool for
-iterative algorithms and fast interactive use.</p>
+<p>Spark最重要的一个功能就是可以<em>持久化</em>(或<em>缓存</em>)数据集到内存中。当你持久化一个RDD时，每一个结点都将把它的计算分块结果保存在内存中，并在对此数据集（或者衍生出的数据集）进行的其它action中重用。这将允许之后的action更快(一般会块10倍以上)。对于迭代算法以及快速交互来说，缓存是一个非常关键的工具。</p>
 
-<p>You can mark an RDD to be persisted using the <code>persist()</code> or <code>cache()</code> methods on it. The first time
-it is computed in an action, it will be kept in memory on the nodes. Spark&#8217;s cache is fault-tolerant &#8211;
-if any partition of an RDD is lost, it will automatically be recomputed using the transformations
-that originally created it.</p>
+<p>你可以使用<code>persist()</code>或<code>cache()</code>方法将一个RDD标记为将要持久化。那么在这个RDD第一次使用一个action计算后，它将会被保存在结点上的内存中。Spark缓存是可以容错的 &#8211; 如果RDD的任何一个分区发生了丢失，那么它会自动的被使用之前用来生成它的transformation来重新计算。</p>
 
-<p>In addition, each persisted RDD can be stored using a different <em>storage level</em>, allowing you, for example,
-to persist the dataset on disk, persist it in memory but as serialized Java objects (to save space),
-replicate it across nodes, or store it off-heap in <a href="http://tachyon-project.org/">Tachyon</a>.
-These levels are set by passing a
-<code>StorageLevel</code> object (<a href="api/scala/index.html#org.apache.spark.storage.StorageLevel">Scala</a>,
+<p>另外，每个持久化的RDD可以被使用不同的<em>存储级别(storage level)</em>来进行保存，从而使你来将数据集保存至磁盘，或使用序列化java对象(以节省空间)来保存至内存，或在节点之间复制，甚至可以使用<a href="http://tachyon-project.org/">Tachyon</a>在堆内存外(OFF_HEAP)保存。这些级别可以通过给<code>persist()</code>方法传递一个<code>StorageLevel</code>对象(<a href="api/scala/index.html#org.apache.spark.storage.StorageLevel">Scala</a>,
 <a href="api/java/index.html?org/apache/spark/storage/StorageLevel.html">Java</a>,
-<a href="api/python/pyspark.html#pyspark.StorageLevel">Python</a>)
-to <code>persist()</code>. The <code>cache()</code> method is a shorthand for using the default storage level,
-which is <code>StorageLevel.MEMORY_ONLY</code> (store deserialized objects in memory). The full set of
-storage levels is:</p>
+<a href="api/python/pyspark.html#pyspark.StorageLevel">Python</a>)来实现。而<code>cache()</code>方法是一个缩略的方法，它直接使用了默认的级别，也就是<code>StorageLevel.MEMORY_ONLY</code>(使用非序列化对象保存在内存中)。所有的保存级别如下：</p>
 
 <table class="table">
-<tr><th style="width:23%">Storage Level</th><th>Meaning</th></tr>
+<tr><th style="width:23%">存储级别</th><th>意义</th></tr>
 <tr>
   <td> MEMORY_ONLY </td>
-  <td> Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, some partitions will
-    not be cached and will be recomputed on the fly each time they're needed. This is the default level. </td>
+  <td> 将RDD作为反序列化的的Java对象存储在JVM中。如果RDD不能被内存装下，一些分区将不会被缓存，并且在需要的时候被重新计算。这是是默认级别。 </td>
 </tr>
 <tr>
   <td> MEMORY_AND_DISK </td>
-  <td> Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, store the
-    partitions that don't fit on disk, and read them from there when they're needed. </td>
+  <td> 将RDD作为反序列化的的对象存储在JVM中。如果RDD不能被内存装下，超出的分区将被保存在硬盘上，并且在需要时被读取。 </td>
 </tr>
 <tr>
   <td> MEMORY_ONLY_SER </td>
-  <td> Store RDD as <i>serialized</i> Java objects (one byte array per partition).
-    This is generally more space-efficient than deserialized objects, especially when using a
-    <a href="tuning.html">fast serializer</a>, but more CPU-intensive to read.
+  <td> 将RDD作为<i>序列化的</i>对象进行存储(每一分区占用一个字节数组)。通常来说，这比将对象反序列化的空间利用率更高，尤其当使用<a href="tuning.html">快速序列化器(fast serializer)</a>，但在读取时会比较占用CPU。
   </td>
 </tr>
 <tr>
   <td> MEMORY_AND_DISK_SER </td>
-  <td> Similar to MEMORY_ONLY_SER, but spill partitions that don't fit in memory to disk instead of
-    recomputing them on the fly each time they're needed. </td>
+  <td> 与MEMORY_ONLY_SER相似，但是把超出内存的分区将存储在硬盘上而不是在每次需要的时候重新计算。</td>
 </tr>
 <tr>
   <td> DISK_ONLY </td>
-  <td> Store the RDD partitions only on disk. </td>
+  <td> 只将RDD分区存储在硬盘上。</td>
 </tr>
 <tr>
   <td> MEMORY_ONLY_2, MEMORY_AND_DISK_2, etc.  </td>
-  <td> Same as the levels above, but replicate each partition on two cluster nodes. </td>
+  <td> 与上述的存储级别一样，但是将每一个分区都复制到两个集群结点上。 </td>
 </tr>
 <tr>
   <td> OFF_HEAP (experimental) </td>
-  <td> Store RDD in serialized format in <a href="http://tachyon-project.org">Tachyon</a>.
-    Compared to MEMORY_ONLY_SER, OFF_HEAP reduces garbage collection overhead and allows executors
-    to be smaller and to share a pool of memory, making it attractive in environments with
-    large heaps or multiple concurrent applications. Furthermore, as the RDDs reside in Tachyon,
-    the crash of an executor does not lead to losing the in-memory cache. In this mode, the memory
-    in Tachyon is discardable. Thus, Tachyon does not attempt to reconstruct a block that it evicts
-    from memory. If you plan to use Tachyon as the off heap store, Spark is compatible with Tachyon
-    out-of-the-box. Please refer to this <a href="http://tachyon-project.org/master/Running-Spark-on-Tachyon.html">page</a>
-    for the suggested version pairings.
+  <td> 将RDD以序列化的格式存储在<a href="http://tachyon-project.org">Tachyon</a>中。与MEMORY_ONLY_SER相比，OFF_HEAP消减了垃圾回收的开支，并且允许执行器(executor)变的更小并可以共享内存池，从而使其在拥有大的对内存的环境或多个并行应用的环境中更具吸引力。此外，因为RDD存在于Tachyon中，那么执行器(executor)的崩溃就不会导致内存中缓存的丢失。在这种模式下，在Tacnyon中的内存是不可废弃的。因而Tachyon不会尝试重建一个它已从内存中废弃掉的块(block)。如果你打算使用Tachyon来做堆外存储(`OFF_HEAP`)，Spark与Tachyon的兼容性是开箱即用的。请参看<a href="http://tachyon-project.org/master/Running-Spark-on-Tachyon.html">该页面</a>来查看建议的版本匹配。
   </td>
 </tr>
 </table>
 
-<p><strong>Note:</strong> <em>In Python, stored objects will always be serialized with the <a href="https://docs.python.org/2/library/pickle.html">Pickle</a> library, so it does not matter whether you choose a serialized level.</em></p>
+<p><strong>注意：</strong> <em>在python中，存储的对象总会使用<a href="https://docs.python.org/2/library/pickle.html">Pickle</a>库来进行序列化，因而无论你是否选择了一个序列化级别都没有关系。</em></p>
 
-<p>Spark also automatically persists some intermediate data in shuffle operations (e.g. <code>reduceByKey</code>), even without users calling <code>persist</code>. This is done to avoid recomputing the entire input if a node fails during the shuffle. We still recommend users call <code>persist</code> on the resulting RDD if they plan to reuse it.</p>
+<p>Spark同样可以自动持久化一些shuffle操作的中间数据(比如<code>reduceByKey</code>），即使用户没有调用<code>persist</code>。这样做是为了在shuffle过程中节点出问题的情况下避免重新计算整个输入集。但我们还是建议如果打算重用结果RDD的话，用户要直接对其调用<code>persist</code>。</p>
 
-<h3 id="which-storage-level-to-choose">Which Storage Level to Choose?</h3>
+<h3 id="section-7">存储级别的选择</h3>
 
-<p>Spark&#8217;s storage levels are meant to provide different trade-offs between memory usage and CPU
-efficiency. We recommend going through the following process to select one:</p>
+<p>Spark的不同存储级别，旨在满足内存使用和CPU效率权衡上的不同需求。我们建议通过以下的步骤来进行选择：</p>
 
 <ul>
   <li>
-    <p>If your RDDs fit comfortably with the default storage level (<code>MEMORY_ONLY</code>), leave them that way.
-This is the most CPU-efficient option, allowing operations on the RDDs to run as fast as possible.</p>
+    <p>如果你的RDD可以很好的与默认的存储级别(<code>MEMORY_ONLY</code>)契合，就不需要做任何修改了。这已经是CPU使用效率最高的选项，它使得RDD的操作尽可能的快。</p>
   </li>
   <li>
-    <p>If not, try using <code>MEMORY_ONLY_SER</code> and <a href="tuning.html">selecting a fast serialization library</a> to
-make the objects much more space-efficient, but still reasonably fast to access.</p>
+    <p>如果不行，试着使用<code>MEMORY_ONLY_SER</code>并且选择一个<a href="tuning.html">快速序列化的库</a>使得对象在有比较高的空间使用率的情况下，依然可以较快被访问。</p>
   </li>
   <li>
-    <p>Don&#8217;t spill to disk unless the functions that computed your datasets are expensive, or they filter
-a large amount of the data. Otherwise, recomputing a partition may be as fast as reading it from
-disk.</p>
+    <p>尽可能不要存储到硬盘上，除非计算数据集的函数，计算量特别大，或者它们过滤了大量的数据。否则，重新计算一个分区的速度，和与从硬盘中读取基本差不多快。</p>
   </li>
   <li>
-    <p>Use the replicated storage levels if you want fast fault recovery (e.g. if using Spark to serve
-requests from a web application). <em>All</em> the storage levels provide full fault tolerance by
-recomputing lost data, but the replicated ones let you continue running tasks on the RDD without
-waiting to recompute a lost partition.</p>
+    <p>如果你想有快速故障恢复能力，使用复制存储级别(例如：用Spark来响应web应用的请求)。<em>所有</em>的存储级别都有通过重新计算丢失数据恢复错误的容错机制，但是复制存储级别可以让你在RDD上持续的运行任务，而不需要等待丢失的分区被重新计算。</p>
   </li>
   <li>
-    <p>In environments with high amounts of memory or multiple applications, the experimental <code>OFF_HEAP</code>
-mode has several advantages:</p>
+    <p>在大内存或者多应用的环境中， 实验性的<code>OFF_HEAP</code>模式有几个好处：</p>
     <ul>
-      <li>It allows multiple executors to share the same pool of memory in Tachyon.</li>
-      <li>It significantly reduces garbage collection costs.</li>
-      <li>Cached data is not lost if individual executors crash.</li>
+      <li>允许多个执行器(executor)共享Tachyon中的共享内存。</li>
+      <li>显著的减少垃圾回收的消耗。</li>
+      <li>单个executor崩溃时缓存数据不会丢失。</li>
     </ul>
   </li>
 </ul>
 
-<h3 id="removing-data">Removing Data</h3>
+<h3 id="section-8">数据移除</h3>
 
-<p>Spark automatically monitors cache usage on each node and drops out old data partitions in a
-least-recently-used (LRU) fashion. If you would like to manually remove an RDD instead of waiting for
-it to fall out of the cache, use the <code>RDD.unpersist()</code> method.</p>
+<p>Spark 自动监控每个节点的缓存使用，依据最近最少使用算法(LRU)丢弃老的数据分区. 如果你想手工移除而不是等待cache移除机制，使<code>RDD.unpersist()</code>方法。</p>
 
-<h1 id="shared-variables">Shared Variables</h1>
+<h1 id="section-9">共享变量</h1>
 
-<p>Normally, when a function passed to a Spark operation (such as <code>map</code> or <code>reduce</code>) is executed on a
-remote cluster node, it works on separate copies of all the variables used in the function. These
-variables are copied to each machine, and no updates to the variables on the remote machine are
-propagated back to the driver program. Supporting general, read-write shared variables across tasks
-would be inefficient. However, Spark does provide two limited types of <em>shared variables</em> for two
-common usage patterns: broadcast variables and accumulators.</p>
+<p>一般来说，当一个函数被传递给Spark操作(例如map或reduce)，在一个远程集群节点上运行，它实际上操作的是这个函数用到的所有变量的独立拷贝。这些变量会被拷贝到每一台机器，在远程机器上对变量的所有更新都不会被传播回驱动程序。通常看来，在任务之间中，读写共享变量显然不够高效。然而，Spark还是为两种常见的使用模式提供了两种有限的<em>共享变量</em>：广播变量(broadcast variable)和累加器(accumulator)。</p>
 
-<h2 id="broadcast-variables">Broadcast Variables</h2>
+<h2 id="broadcast-variable">广播变量(broadcast variable)</h2>
 
-<p>Broadcast variables allow the programmer to keep a read-only variable cached on each machine rather
-than shipping a copy of it with tasks. They can be used, for example, to give every node a copy of a
-large input dataset in an efficient manner. Spark also attempts to distribute broadcast variables
-using efficient broadcast algorithms to reduce communication cost.</p>
+<p>广播变量允许程序员保留一个只读的变量，缓存在每一台机器上，而非每个任务保存一份拷贝。它们可以这样被使用，例如，以一种高效的方式给每个结点一个大的输入数据集。Spark会尝试使用一种高效的广播算法来传播广播变量，从而减少通信的代价。</p>
 
-<p>Spark actions are executed through a set of stages, separated by distributed &#8220;shuffle&#8221; operations.
-Spark automatically broadcasts the common data needed by tasks within each stage. The data
-broadcasted this way is cached in serialized form and deserialized before running each task. This
-means that explicitly creating broadcast variables is only useful when tasks across multiple stages
-need the same data or when caching the data in deserialized form is important.</p>
+<p>Spark action在一组被分布式&#8221;shuffle&#8221;操作分离开的场景中被执行。Spark会自动的将一些每个场景中任务所需要的通用数据进行广播。通过这种方式广播的数据会被以序列化的方式缓存，之后在运行每个任务前被反序列化。这意味着显式创建广播变量将仅对需要相同数据的多个场景中的任务有用，或只对那些以非序列化格式缓存数据的方式很重要的场景有用。</p>
 
-<p>Broadcast variables are created from a variable <code>v</code> by calling <code>SparkContext.broadcast(v)</code>. The
-broadcast variable is a wrapper around <code>v</code>, and its value can be accessed by calling the <code>value</code>
-method. The code below shows this:</p>
+<p>广播变量是通过调用<code>SparkContext.broadcast(v)</code>方法从变量<code>v</code>创建的。广播变量是一个<code>v</code>的封装器，它的值可以通过调用<code>value</code>方法获得。以下代码进行了展示：</p>
 
 <div class="codetabs">
 
@@ -1418,26 +1330,15 @@ method. The code below shows this:</p>
 
 </div>
 
-<p>After the broadcast variable is created, it should be used instead of the value <code>v</code> in any functions
-run on the cluster so that <code>v</code> is not shipped to the nodes more than once. In addition, the object
-<code>v</code> should not be modified after it is broadcast in order to ensure that all nodes get the same
-value of the broadcast variable (e.g. if the variable is shipped to a new node later).</p>
+<p>在广播变量被创建后，它应该在集群运行的任何函数中，代替<code>v</code>值被调用，从而v值不需要被再次传递到这些结点上。另外，对象<code>v</code>不能在广播后修改，这样可以保证所有结点的收到的都是一模一样的广播值(例如如果变量之后被传播到了一个新的节点)。</p>
 
-<h2 id="accumulators-a-nameaccumlinka">Accumulators <a name="AccumLink"></a></h2>
+<h2 id="accumulator-a-nameaccumlinka">累加器(Accumulator) <a name="AccumLink"></a></h2>
 
-<p>Accumulators are variables that are only &#8220;added&#8221; to through an associative operation and can
-therefore be efficiently supported in parallel. They can be used to implement counters (as in
-MapReduce) or sums. Spark natively supports accumulators of numeric types, and programmers
-can add support for new types. If accumulators are created with a name, they will be
-displayed in Spark&#8217;s UI. This can be useful for understanding the progress of 
-running stages (NOTE: this is not yet supported in Python).</p>
+<p>累加器是一种只能通过关联操作进行“加”操作的变量，因此可以高效被并行支持。它们可以用来实现计数器counter(如MapReduce中)和求和器sum。Spark原生就支持数字numeric类型的累加器，开发者可以自己添加新的支持类型。如果创建累加器时给其进行了命名，它们将会被显示在Spark UI上。这对于理解运行场景的进度是很有用的(注意：暂时在Python中还不支持这项功能)。</p>
 
-<p>An accumulator is created from an initial value <code>v</code> by calling <code>SparkContext.accumulator(v)</code>. Tasks
-running on the cluster can then add to it using the <code>add</code> method or the <code>+=</code> operator (in Scala and Python).
-However, they cannot read its value.
-Only the driver program can read the accumulator&#8217;s value, using its <code>value</code> method.</p>
+<p>一个累加器可以通过调用<code>SparkContext.accumulator(v)</code>方法从一个初始值<code>v</code>中创建。运行在集群上的任务，可以通过使用<code>add</code>方法或<code>+=</code>操作符(Scala和Python中)来给它加值。然而，他们不能读取这个值。只有驱动程序可以使用<code>value</code>方法来读取累加器的值。</p>
 
-<p>The code below shows an accumulator being used to add up the elements of an array:</p>
+<p>以下代码展示了如何利用累加器来将一个数组里面的所有元素相加：</p>
 
 <div class="codetabs">
 
@@ -1453,11 +1354,7 @@ Only the driver program can read the accumulator&#8217;s value, using its <code>
 <span class="n">scala</span><span class="o">&gt;</span> <span class="n">accum</span><span class="o">.</span><span class="n">value</span>
 <span class="n">res2</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">10</span></code></pre></div>
 
-    <p>While this code used the built-in support for accumulators of type Int, programmers can also
-create their own types by subclassing <a href="api/scala/index.html#org.apache.spark.AccumulatorParam">AccumulatorParam</a>.
-The AccumulatorParam interface has two methods: <code>zero</code> for providing a &#8220;zero value&#8221; for your data
-type, and <code>addInPlace</code> for adding two values together. For example, supposing we had a <code>Vector</code> class
-representing mathematical vectors, we could write:</p>
+    <p>代码使用了内建的Int的累加器, 开发者也可以自己创建<a href="api/scala/index.html#org.apache.spark.AccumulatorParam">AccumulatorParam</a>的子类来建立新的累加器类型。AccumulatorParam接口有两个方法，<code>zero</code>代表为你的数据类型提供一个&#8221;零值&#8221;，addInPlace代表将两个值相加。 例如假定我们有一个<code>Vector</code>类，代表数学里的vector, 我们可以实现代码如下:</p>
 
     <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">object</span> <span class="nc">VectorAccumulatorParam</span> <span class="k">extends</span> <span class="nc">AccumulatorParam</span><span class="o">[</span><span class="kt">Vector</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">zero</span><span class="o">(</span><span class="n">initialValue</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">)</span><span class="k">:</span> <span class="kt">Vector</span> <span class="o">=</span> <span class="o">{</span>
@@ -1468,13 +1365,10 @@ representing mathematical vectors, we could write:</p>
   <span class="o">}</span>
 <span class="o">}</span>
 
-<span class="c1">// Then, create an Accumulator of this type:</span>
+<span class="c1">// 然后，创建一个该类型的累加器：</span>
 <span class="k">val</span> <span class="n">vecAccum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="k">new</span> <span class="nc">Vector</span><span class="o">(...))(</span><span class="nc">VectorAccumulatorParam</span><span class="o">)</span></code></pre></div>
 
-    <p>In Scala, Spark also supports the more general <a href="api/scala/index.html#org.apache.spark.Accumulable">Accumulable</a>
-interface to accumulate data where the resulting type is not the same as the elements added (e.g. build
-a list by collecting together elements), and the <code>SparkContext.accumulableCollection</code> method for accumulating
-common Scala collection types.</p>
+    <p>如果使用Scala, Spark也支持更通用的<a href="api/scala/index.html#org.apache.spark.Accumulable">Accumulable</a>接口，可以用于累加数据，并且结果不一定与原始元素类型相同(比如通过收集所有元素来构建一个列表list)，并且Spark还支持使用<code>SparkContext.accumulableCollection</code>方法来累加通用的Scala集合类型。</p>
 
   </div>
 
@@ -1489,11 +1383,7 @@ common Scala collection types.</p>
 <span class="n">accum</span><span class="o">.</span><span class="na">value</span><span class="o">();</span>
 <span class="c1">// returns 10</span></code></pre></div>
 
-    <p>While this code used the built-in support for accumulators of type Integer, programmers can also
-create their own types by subclassing <a href="api/java/index.html?org/apache/spark/AccumulatorParam.html">AccumulatorParam</a>.
-The AccumulatorParam interface has two methods: <code>zero</code> for providing a &#8220;zero value&#8221; for your data
-type, and <code>addInPlace</code> for adding two values together. For example, supposing we had a <code>Vector</code> class
-representing mathematical vectors, we could write:</p>
+    <p>代码使用了内建的Integer的累加器, 开发者也可以自己创建<a href="api/java/index.html?org/apache/spark/AccumulatorParam.html">AccumulatorParam</a>的子类来建立新的累加器类型。AccumulatorParam接口有两个方法，<code>zero</code>代表为你的数据类型提供一个&#8221;零值&#8221;，addInPlace代表将两个值相加。 例如假定我们有一个<code>Vector</code>类，代表数学里的vector, 我们可以实现代码如下:</p>
 
     <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">VectorAccumulatorParam</span> <span class="kd">implements</span> <span class="n">AccumulatorParam</span><span class="o">&lt;</span><span class="n">Vector</span><span class="o">&gt;</span> <span class="o">{</span>
   <span class="kd">public</span> <span class="n">Vector</span> <span class="nf">zero</span><span class="o">(</span><span class="n">Vector</span> <span class="n">initialValue</span><span class="o">)</span> <span class="o">{</span>
@@ -1504,12 +1394,10 @@ representing mathematical vectors, we could write:</p>
   <span class="o">}</span>
 <span class="o">}</span>
 
-<span class="c1">// Then, create an Accumulator of this type:</span>
+<span class="c1">// 然后，创建一个该类型的累加器：</span>
 <span class="n">Accumulator</span><span class="o">&lt;</span><span class="n">Vector</span><span class="o">&gt;</span> <span class="n">vecAccum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">accumulator</span><span class="o">(</span><span class="k">new</span> <span class="nf">Vector</span><span class="o">(...),</span> <span class="k">new</span> <span class="nf">VectorAccumulatorParam</span><span class="o">());</span></code></pre></div>
 
-    <p>In Java, Spark also supports the more general <a href="api/java/index.html?org/apache/spark/Accumulable.html">Accumulable</a>
-interface to accumulate data where the resulting type is not the same as the elements added (e.g. build
-a list by collecting together elements).</p>
+    <p>如果使用Java, Spark也支持更通用的<a href="api/java/index.html?org/apache/spark/Accumulable.html">Accumulable</a>接口，可以用于累加数据，并且结果不一定与原始元素类型相同(比如通过收集所有元素来构建一个列表list)。</p>
 
   </div>
 
@@ -1525,11 +1413,7 @@ a list by collecting together elements).</p>
 <span class="n">scala</span><span class="o">&gt;</span> <span class="n">accum</span><span class="o">.</span><span class="n">value</span>
 <span class="mi">10</span></code></pre></div>
 
-    <p>While this code used the built-in support for accumulators of type Int, programmers can also
-create their own types by subclassing <a href="api/python/pyspark.html#pyspark.AccumulatorParam">AccumulatorParam</a>.
-The AccumulatorParam interface has two methods: <code>zero</code> for providing a &#8220;zero value&#8221; for your data
-type, and <code>addInPlace</code> for adding two values together. For example, supposing we had a <code>Vector</code> class
-representing mathematical vectors, we could write:</p>
+    <p>代码使用了内建的Int的累加器, 开发者也可以自己创建<a href="api/python/pyspark.html#pyspark.AccumulatorParam">AccumulatorParam</a>的子类来建立新的累加器类型。AccumulatorParam接口有两个方法，<code>zero</code>代表为你的数据类型提供一个&#8221;零值&#8221;，addInPlace代表将两个值相加。 例如假定我们有一个<code>Vector</code>类，代表数学里的vector, 我们可以实现代码如下:</p>
 
     <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">VectorAccumulatorParam</span><span class="p">(</span><span class="n">AccumulatorParam</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">zero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initialValue</span><span class="p">):</span>
@@ -1539,7 +1423,7 @@ representing mathematical vectors, we could write:</p>
         <span class="n">v1</span> <span class="o">+=</span> <span class="n">v2</span>
         <span class="k">return</span> <span class="n">v1</span>
 
-<span class="c"># Then, create an Accumulator of this type:</span>
+<span class="c"># 然后，创建一个该类型的累加器：</span>
 <span class="n">vecAccum</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="p">(</span><span class="n">Vector</span><span class="p">(</span><span class="o">...</span><span class="p">),</span> <span class="n">VectorAccumulatorParam</span><span class="p">())</span></code></pre></div>
 
   </div>
@@ -1583,100 +1467,77 @@ of that each task&#8217;s update may be applied more than once if tasks or job s
 
 </div>
 
-<h1 id="deploying-to-a-cluster">Deploying to a Cluster</h1>
+<h1 id="section-10">发布到集群中</h1>
 
-<p>The <a href="submitting-applications.html">application submission guide</a> describes how to submit applications to a cluster.
-In short, once you package your application into a JAR (for Java/Scala) or a set of <code>.py</code> or <code>.zip</code> files (for Python),
-the <code>bin/spark-submit</code> script lets you submit it to any supported cluster manager.</p>
+<p><a href="submitting-applications.html">应用提交指南</a>描述了如何提交应用到一个Spark集群中。简而言之，一旦你打包好你的应用jar包（Java/Scala)，或者一堆<code>.py</code>或<code>.zip</code>文件(Python), <code>bin/spark-submit</code>脚本允许你提交它们到任意的cluster manager。</p>
 
-<h1 id="launching-spark-jobs-from-java--scala">Launching Spark jobs from Java / Scala</h1>
+<h1 id="javascalasparkjob">从Java/Scala中启动Spark作业(job)</h1>
 
-<p>The <a href="api/java/index.html?org/apache/spark/launcher/package-summary.html">org.apache.spark.launcher</a>
+<p><a href="api/java/index.html?org/apache/spark/launcher/package-summary.html">org.apache.spark.launcher</a>包提供了用于将Spark作业启动为子进程的类，使用简单的Java API。
 package provides classes for launching Spark jobs as child processes using a simple Java API.</p>
 
-<h1 id="unit-testing">Unit Testing</h1>
+<h1 id="section-11">单元测试</h1>
 
-<p>Spark is friendly to unit testing with any popular unit test framework.
-Simply create a <code>SparkContext</code> in your test with the master URL set to <code>local</code>, run your operations,
-and then call <code>SparkContext.stop()</code> to tear it down.
-Make sure you stop the context within a <code>finally</code> block or the test framework&#8217;s <code>tearDown</code> method,
-as Spark does not support two contexts running concurrently in the same program.</p>
+<p>Spark针对任何流行的单元测试框架下的单元测试是友好的。只需在你的测试中创建一个<code>SparkContext</code>，并将master URL设置为<code>local</code>，然后就可以运行你的操作，并在最好调用<code>SparkContext.stop()</code>来结束测试即可。务必保证在一个<code>finally</code>块中或在测试框架的<code>tearDown</code>方法中结束context，因为Spark不支持在一个程序中同时并行的运行两个context。</p>
 
-<h1 id="migrating-from-pre-10-versions-of-spark">Migrating from pre-1.0 Versions of Spark</h1>
+<h1 id="section-12">从1.0以前的版本升级</h1>
 
 <div class="codetabs">
 
 <div data-lang="scala">
 
-    <p>Spark 1.0 freezes the API of Spark Core for the 1.X series, in that any API available today that is
-not marked &#8220;experimental&#8221; or &#8220;developer API&#8221; will be supported in future versions.
-The only change for Scala users is that the grouping operations, e.g. <code>groupByKey</code>, <code>cogroup</code> and <code>join</code>,
-have changed from returning <code>(Key, Seq[Value])</code> pairs to <code>(Key, Iterable[Value])</code>.</p>
+    <p>Spark 1.0 为1.x系列版本冻结了API的改动， 没有被标记为&#8221;experimental&#8221;或者&#8221;developer API&#8221;的API将会在未来版本中被支持。 对于Scala用户唯一的改变是分组操作，如<code>groupByKey</code>，<code>cogroup</code>和<code>join</code>，返回结果类型从<code>(Key, Seq[Value])</code>改为<code>(Key, Iterable[Value])</code>。</p>
 
   </div>
 
 <div data-lang="java">
 
-    <p>Spark 1.0 freezes the API of Spark Core for the 1.X series, in that any API available today that is
-not marked &#8220;experimental&#8221; or &#8220;developer API&#8221; will be supported in future versions.
-Several changes were made to the Java API:</p>
+    <p>Spark 1.0 为1.x系列版本冻结了API的改动， 没有被标记为&#8221;experimental&#8221;或者&#8221;developer API&#8221;的API将会在未来版本中被支持。对Java API来说有以下改动：</p>
 
     <ul>
-      <li>The Function classes in <code>org.apache.spark.api.java.function</code> became interfaces in 1.0, meaning that old
-code that <code>extends Function</code> should <code>implement Function</code> instead.</li>
-      <li>New variants of the <code>map</code> transformations, like <code>mapToPair</code> and <code>mapToDouble</code>, were added to create RDDs
-of special data types.</li>
-      <li>Grouping operations like <code>groupByKey</code>, <code>cogroup</code> and <code>join</code> have changed from returning 
-<code>(Key, List&lt;Value&gt;)</code> pairs to <code>(Key, Iterable&lt;Value&gt;)</code>.</li>
+      <li><code>org.apache.spark.api.java.function</code>内的Function类在1.0中变为了interface，这意味着之前使用<code>extend Function</code>的旧代码现在需要使用<code>implement Function</code>来代替。</li>
+      <li><code>map</code> transformation有新变化，例如<code>mapToPair</code>和<code>mapToDouble</code>，被加入近来用以创建新的特殊数据类型的RDD。</li>
+      <li>分组操作例如<code>groupByKey</code>，<code>cogroup</code>以及<code>join</code>的返回值从<code>(Key, List&lt;Value&gt;)</code>变为<code>(Key, Iterable&lt;Value&gt;)</code>。</li>
     </ul>
 
   </div>
 
 <div data-lang="python">
 
-    <p>Spark 1.0 freezes the API of Spark Core for the 1.X series, in that any API available today that is
-not marked &#8220;experimental&#8221; or &#8220;developer API&#8221; will be supported in future versions.
-The only change for Python users is that the grouping operations, e.g. <code>groupByKey</code>, <code>cogroup</code> and <code>join</code>,
-have changed from returning (key, list of values) pairs to (key, iterable of values).</p>
+    <p>Spark 1.0 为1.x系列版本冻结了API的改动， 没有被标记为&#8221;experimental&#8221;或者&#8221;developer API&#8221;的API将会在未来版本中被支持。对Python用户来说，唯一的变动就是分组操作，例如<code>groupByKey</code>，<code>cogroup</code>以及<code>join</code>的返回值从(key, list of values)变为(key, iterable of values)。</p>
 
   </div>
 
 </div>
 
-<p>Migration guides are also available for <a href="streaming-programming-guide.html#migration-guide-from-091-or-below-to-1x">Spark Streaming</a>,
-<a href="mllib-guide.html#migration-guide">MLlib</a> and <a href="graphx-programming-guide.html#migrating-from-spark-091">GraphX</a>.</p>
+<p>以下升级指南也同样可见<a href="streaming-programming-guide.html#migration-guide-from-091-or-below-to-1x">Spark Streaming</a>，
+<a href="mllib-guide.html#migration-guide">MLlib</a>和<a href="graphx-programming-guide.html#migrating-from-spark-091">GraphX</a>。</p>
 
-<h1 id="where-to-go-from-here">Where to Go from Here</h1>
+<h1 id="section-13">更多资料</h1>
 
-<p>You can see some <a href="http://spark.apache.org/examples.html">example Spark programs</a> on the Spark website.
-In addition, Spark includes several samples in the <code>examples</code> directory
+<p>你可以在官方站点查看<a href="http://spark.apache.org/examples.html">Spark示例程序</a>. 除此之外，Spark在发布包的<code>examples</code>的文件夹中包含了几个例子
 (<a href="https://github.com/apache/spark/tree/master/examples/src/main/scala/org/apache/spark/examples">Scala</a>,
  <a href="https://github.com/apache/spark/tree/master/examples/src/main/java/org/apache/spark/examples">Java</a>,
  <a href="https://github.com/apache/spark/tree/master/examples/src/main/python">Python</a>,
- <a href="https://github.com/apache/spark/tree/master/examples/src/main/r">R</a>).
-You can run Java and Scala examples by passing the class name to Spark&#8217;s <code>bin/run-example</code> script; for instance:</p>
+ <a href="https://github.com/apache/spark/tree/master/examples/src/main/r">R</a>)。
+运行Java 和 Scala例子时你可以传递类名给Spark的<code>bin/run-example</code>脚本，例如:</p>
 
 <pre><code>./bin/run-example SparkPi
 </code></pre>
 
-<p>For Python examples, use <code>spark-submit</code> instead:</p>
+<p>对于Python例子，使用<code>spark-submit</code>：</p>
 
 <pre><code>./bin/spark-submit examples/src/main/python/pi.py
 </code></pre>
 
-<p>For R examples, use <code>spark-submit</code> instead:</p>
+<p>对于R例子，使用<code>spark-submit</code>：</p>
 
 <pre><code>./bin/spark-submit examples/src/main/r/dataframe.R
 </code></pre>
 
-<p>For help on optimizing your programs, the <a href="configuration.html">configuration</a> and
-<a href="tuning.html">tuning</a> guides provide information on best practices. They are especially important for
-making sure that your data is stored in memory in an efficient format.
-For help on deploying, the <a href="cluster-overview.html">cluster mode overview</a> describes the components involved
-in distributed operation and supported cluster managers.</p>
+<p>想了解优化的方法, <a href="configuration.html">配置(configuration)</a>和<a href="tuning.html">调优(tuning)</a>指南提供了最佳实践。特别重要的是你的数据要以有效的格式存储在内存中. 想了解发布信息，<a href="cluster-overview.html">cluster mode overview</a>描述了分布式操作和集群管理器支持的组件。</p>
 
-<p>Finally, full API documentation is available in
-<a href="api/scala/#org.apache.spark.package">Scala</a>, <a href="api/java/">Java</a>, <a href="api/python/">Python</a> and <a href="api/R/">R</a>.</p>
+<p>最后全部的API文档请访问<a href="api/scala/#org.apache.spark.package">Scala</a>, <a href="api/java/">Java</a>, <a href="api/python/">Python</a> and <a href="api/R/">R</a>。</p>
 
 
         </div> <!-- /container -->
