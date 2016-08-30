@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="ligangty.github.io : ligangty&#39;s github pages">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>通过http代理来使用github</title>
+  </head>
+
+  <body>
+
+    <h1>通过http代理来使用github</h1>
+
+    <div>
+      <div>
+        <ol>
+          <li>添加rsa公钥到github </li>
+
+          <li>
+            配置config <br />
+            vi ~/.ssh/config <br />
+            <br />
+            内容为： <br />
+            Host github.com <br />
+            ProxyCommand ~/.ssh/ssh-https-tunnel %h %p<br />
+            Port 443<br />
+            Hostname ssh.github.com<br />
+          </li>
+
+          <li>
+            下载ssh-https-tunnel，可以从 http://zwitterion.org/software/ssh-https-tunnel/ssh-https-tunnel ，保存到你的git的~/.ssh目录下，添加可执行权限。并且修改配置。 <br />
+            <br />
+            # Proxy details<br />
+            my $host = "abc.com";<br />
+            my $port = 3128;<br />
+            # Basic Proxy Authentication - leave empty if you don't need it<br />
+            my $user = "name";<br />
+            my $pass = "password";<br />
+          </li>
+
+          <li>
+            成功了。<br />
+            git clone git@github.com:dddd/test.git<br />
+          </li>
+        </ol>
+      </div>
+
+
+      <div>
+        注： ssh-https-tunnel 文件内容如下：<br /><br />
+        <br />
+        <br />
+        #!/usr/bin/perl -T -w <br /><br />
+        #Copyright (C) 2001,2002,2008 Mark Suter <suter@humbug.org.au><br />
+        #<br />
+        # This program tunnels a secure shell connection via a https proxy as<br />
+        # the ProxyCommand program.  The destination secure shell server needs<br />
+        # to be running on port 443 unless the proxy is very lenient.<br />
+        #<br />
+        # This program is free software: you can redistribute it and/or modify<br />
+        # it under the terms of the GNU General Public License as published by<br />
+        # the Free Software Foundation, either version 3 of the License, or<br />
+        # (at your option) any later version.<br />
+        #<br />
+        # This program is distributed in the hope that it will be useful,<br />
+        # but WITHOUT ANY WARRANTY; without even the implied warranty of<br />
+        # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br />
+        # GNU General Public License for more details.<br />
+        #<br />
+        # You should have received a copy of the GNU General Public License<br />
+        # along with this program.  If not, see <http://www.gnu.org/licenses/>.<br />
+        #<br />
+        # $Id: ssh-https-tunnel,v 1.3 2008/05/17 07:00:42 suter Exp $<br />
+        <br />
+        use strict;<br />
+        use IO::Select;<br />
+        use IO::Socket;<br />
+        <br />
+        ################################<br />
+        ##  Start User Configuration  ##<br />
+        ################################<br />
+        <br />
+        # Proxy details<br />
+        my $host = "proxy.example.com";<br />
+        my $port = 3128;<br />
+        <br />
+        # Basic Proxy Authentication - leave empty if you don't need it<br />
+        my $user = "";<br />
+        my $pass = "";<br />
+        <br />
+        # Add an entry to your ~/.ssh/config that so "ssh remote.example.org"<br />
+        # uses this program to proxy the connection.<br />
+        #<br />
+        #    host remote.example.org<br />
+        #        ProxyCommand /path/to/ssh-https-tunnel %h %p<br />
+        #        Port 443<br />
+        #        ServerAliveInterval 10<br />
+        #<br />
+        # The last option enables Keep Alives to avoid the problem of many<br />
+        # proxies timing out inactive connections.  Check your ssh client's<br />
+        # documentation for details.<br />
+        #<br />
+        # If you are behind a Microsoft ISA server, or similar proxy that uses<br />
+        # NTLM, see http://www.google.com/search?q=ntlm+proxy+auth for ideas.<br />
+        <br />
+        ################################<br />
+        ##   End User Configuration   ##<br />
+        ################################<br />
+        <br />
+        ## Based on "MIME::Base64::old_encode_base64" to avoid that dependancy<br />
+        sub auth_header($$) {<br />
+          my ( $user, $pass ) = @_;<br />
+        <br />
+          sub encode_base64 ($;$) {<br />
+              my $eol = $_[1];<br />
+              $eol = "\n" unless defined $eol;<br />
+        <br />
+              my $res = pack( "u", $_[0] );<br />
+        <br />
+              # Remove first character of each line, remove newlines<br />
+              $res =~ s/^.//mg;<br />
+              $res =~ s/\n//g;<br />
+        <br />
+              $res =~ tr|` -_|AA-Za-z0-9+/|;  # ` help syntax parsers<br />
+        <br />
+              # fix padding at the end<br />
+              my $padding = ( 3 - length( $_[0] ) % 3 ) % 3;<br />
+              $res =~ s/.{$padding}$/'=' x $padding/e if $padding;<br />
+        <br />
+              # break encoded string into lines of no more than 76 characters each<br />
+              if ( length $eol ) {<br />
+                  $res =~ s/(.{1,76})/$1$eol/g;<br />
+              }<br />
+              return $res;<br />
+          }<br />
+        <br />
+          return "Proxy-Authorization: Basic " . encode_base64( "$user:$pass", "\015\012" );<br />
+        }<br />
+        <br />
+        ## Tunnel the connection and return a handle for it<br />
+        sub tunnel_connect($$$$$$) {<br />
+          my ( $host, $port, $user, $pass, $remote_host, $remote_port ) = @_;<br />
+        <br />
+          my $socket = IO::Socket::INET->new( PeerAddr => $host, PeerPort => $port )<br />
+              or die "$0: Can't connect to $host:$port: $!\n";<br />
+        <br />
+          $socket->print( "CONNECT $remote_host:$remote_port HTTP/1.0\015\012",<br />
+              $user ? auth_header( $user, $pass ) : "", "\015\012" )<br />
+              or die "$0: Can't write: $!\n";<br />
+        <br />
+          local $/ = "\012";<br />
+          my $response = $socket->getline() or die "$0: Can't read: $!\n";<br />
+          $response =~ /^HTTP\/... 2/i or die "$0: CONNECT failed: $response";<br />
+          do { $response = $socket->getline() or die "$0: Can't read: $!\n"; }<br />
+              until $response =~ /^\s+$/;<br />
+        <br />
+          return $socket;<br />
+        }<br />
+        <br />
+        ## Move data from one handle to another<br />
+        sub proxy_data($$) {<br />
+          my ( $source, $destination ) = @_;<br />
+        <br />
+          my ( $buffer, $length, $offset, $bytes ) = ( "", 0, 0, 0 );<br />
+          $length = sysread( $source, $buffer, 4096, $offset ) or return 0;<br />
+          while ($length) {<br />
+              $bytes = syswrite( $destination, $buffer, $length, $offset ) or return 0;<br />
+              $offset += $bytes;<br />
+              $length -= $bytes;<br />
+          }<br />
+          return 1;<br />
+        }<br />
+        <br />
+        ## Check we have two arguments<br />
+        defined $ARGV[0] and defined $ARGV[1] or die "Usage $0 <host> <port>\n";<br />
+        <br />
+        ## Setup the tunnel<br />
+        my $proxy = tunnel_connect( $host, $port, $user, $pass, $ARGV[0], $ARGV[1] );<br />
+        <br />
+        ## Shift data around in each direction<br />
+        my $sel = IO::Select->new( [ \*STDIN, $proxy ], [ $proxy, \*STDOUT ] );<br />
+        SELECT: while ( my @ready = $sel->can_read() ) {<br />
+          foreach my $handle (@ready) {<br />
+              proxy_data( $$handle[0], $$handle[1] ) or last SELECT;<br />
+          }<br />
+        }
+      </div>
+  </div>
+
+
+  </body>
+</html>
