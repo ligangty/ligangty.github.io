@@ -1,4 +1,7 @@
-baseurl: /
+safe:        false
+baseurl:     /
 
 source:      .
 destination: ./_site
+
+markdown: kramdown
