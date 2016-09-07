@@ -1,0 +1,6 @@
+_site
+Gemfile
+Gemfile.lock
+_plugins
+build/
+temp/
