@@ -5,3 +5,9 @@ source:      .
 destination: ./_site
 
 markdown: kramdown
+
+defaults:
+  - scope:
+      path: "notes"
+    values:
+      layout: "notes"

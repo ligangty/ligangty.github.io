@@ -1,5 +1,4 @@
 ---
-layout: notes
 title: good git commands
 ---
 
@@ -57,4 +56,3 @@ title: good git commands
 * show all tags with create date by date order
 
     git for-each-ref --sort=taggerdate --format '%(refname) %(taggerdate)' refs/tags
-      

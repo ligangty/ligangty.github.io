@@ -1,5 +1,4 @@
 ---
-layout: notes
 title: 通过http代理来使用github
 ---
 
