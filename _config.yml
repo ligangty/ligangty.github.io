@@ -8,9 +8,9 @@ markdown: kramdown
 
 defaults:
   - scope:
-      path: "notes"
+      path: ""
     values:
-      layout: "notes"
+      layout: "default"
 
 gems:
   - kramdown
