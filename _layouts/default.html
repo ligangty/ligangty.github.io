@@ -1,38 +1,14 @@
-<!DOCTYPE html>
-<html>
+{% include header.html %}
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="ligangty.github.io : ligangty&#39;s github pages">
+<div class="container-fluid">
+  {% include nav.html %}
+    <!--nav bar-->
 
-    <link rel="stylesheet" type="text/css" media="screen" href="/stylesheets/stylesheet.css">
-
-    <title>{{ page.title }}</title>
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/ligangty">View on GitHub</a>
-
-          <h1 id="project_title">ligangty.github.io</h1>
-          <h2 id="project_tagline">ligangty&#39;s github pages</h2>
-
-        </header>
+  <div class="span10">
+    <div class="span9 hero-unit">
+      {{ content }}
     </div>
+  </div>
+</div>
 
-    <!-- MAIN CONTENT -->
-    {{ content }}
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-      </footer>
-    </div>
-
-
-  </body>
-</html>
+{% include footer.html %}

@@ -1,0 +1,16 @@
+<div class="row-fluid">
+  <!--nav bar-->
+  <div class="span2" layout:fragment="pfm-nav">
+    <div class="well sidebar-nav">
+      <h3>posts</h3>
+      <ul class="nav nav-list">
+        {% for post in site.posts %}
+        <li>{{ post.date | date_to_string }} <a href="{{ post.url }}">{{ post.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <ul>
+
+  </ul>
