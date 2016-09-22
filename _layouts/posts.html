@@ -25,7 +25,11 @@
     </div>
 
     <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
     {{ content }}
+    <a href="{{ page.previous.url }}">{{ page.previous.title }}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ page.next.url }}">{{ page.next.title }}</a>
+    </div>
+
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
