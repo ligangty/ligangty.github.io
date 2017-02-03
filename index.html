@@ -1,36 +1,27 @@
 ---
 layout: default
-title: ligangty.github.com
+title: Tom Preston-Werner
 ---
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>posts</h3>
-        <ul>
-          {% for post in site.posts %}
-          <li>{{ post.date | date_to_string }} {{ post.id }} <a href="{{ post.url }}">{{ post.title }}</a>{{ post.categories }}</li>
-          {% endfor %}
-        </ul>
-      </section>
-   </div>
-   <div id="main_content_wrap" class="outer">
-     <section id="main_content" class="inner">
-       <h3>all pages</h3>
-       <ul>
-         {% for pa in site.pages %}
-         <li>{{ pa.id }}<a href="{{ pa.url }}">{{ pa.title }}</a>{{ pa.categories }}</li>
-         {% endfor %}
-       </ul>
-     </section>
-  </div>
-　　<div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3><p><a href="./notes/index.html">My Notes</a></p></h3>
-      </section>
-   </div>
-   <div id="main_content_wrap" class="outer">
-     <section id="main_content" class="inner">
-       <h3><p><a href="./docs/index.html">My Docs</a></p></h3>
-     </section>
-   </div>
+<div id="home">
+  <h1>Blog Posts</h1>
+  <ul class="posts">
+    {% for post in site.posts %}
+      <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
+  </ul>
+
+  <h1>Notes</h1>
+  <ul class="posts">
+    <li> &raquo; <a href="https://github.com/ligangty/learningnotes/wiki/Good-git-commands">Good git commands</a></li>
+    <li> &raquo; <a href="https://github.com/ligangty/learningnotes/wiki/Nexus-401">Maven: What to do when Nexus returns '401'</a></li>
+    <li> &raquo; <a href="https://github.com/ligangty/learningnotes/wiki/http-compress">Enable gzip http(s) compression in different container</a></li>
+  </ul>
+
+  <h1>Useful articles</h1>
+  <ul class="posts">
+    <li>&raquo; <a href="https://github.com/ligangty/learningnotes/wiki/Github-ssh-proxy">通过http代理来使用github</a></li>
+    <li>&raquo; <a href="https://github.com/ligangty/learningnotes/wiki/Hibernate-collection-filter">Hibernate 高级查询技巧——集合过滤与子查询(转)</a></li>
+  </ul>
+
+</div>
